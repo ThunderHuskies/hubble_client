@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "209134268918",
+    "firebase_url": "https://c-students-b7a3d.firebaseio.com",
+    "project_id": "c-students-b7a3d",
+    "storage_bucket": "c-students-b7a3d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209134268918:android:ce66966d8fa6e1853a97d7",
+        "android_client_info": {
+          "package_name": "com.thunderhuskies.hubble"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209134268918-e171542q7idu5idduag52skhrh9s7pdv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCt5TtalfpHvLzTJyX_APqj2P3_TxLoFqA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209134268918-e171542q7idu5idduag52skhrh9s7pdv.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "209134268918-khm64m6j1cmb6mapjcf6boitnba5jihr.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.thunderhuskies.CStudents"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
