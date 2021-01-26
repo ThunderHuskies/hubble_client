@@ -1,15 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:cloud_functions/cloud_functions.dart';
-import 'package:firebase_core/firebase_core.dart';
+// import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:http/http.dart' as http;
-import 'user.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'RegisterPage.dart';
 
 void main() => runApp(MyApp());
+
 // Future<void> main() async {
 //   // WidgetsFlutterBinding.ensureInitialized();
 //   // await Firebase.initializeApp();
@@ -59,94 +56,7 @@ class MyApp extends StatelessWidget {
 
     return MaterialApp(
       title: 'Flutter Card Carousel App',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('hubble'),
-        ),
-        body: Center(
-            child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ConstrainedBox(
-                child: ImageSlider(),
-                constraints: BoxConstraints(maxHeight: 500)),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CupertinoButton(
-                  child: Text("Get started"),
-                  onPressed: () {
-                    getStarted();
-                  },
-                  color: Colors.blue,
-                ),
-                Image.asset('assets/images/orlogin.png', scale: 3.5),
-                CupertinoButton(
-                  child: Text("Sign in"),
-                  onPressed: () {
-                    getStarted();
-                  },
-                  color: Colors.blue,
-                ),
-              ],
-            )
-          ],
-        )),
-      ),
-    );
-  }
-}
-
-class ImageSlider extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return ImageSliderState();
-  }
-}
-
-final List<Image> imgList = [
-  Image.asset('assets/images/studybuddylogin.png'),
-  Image.asset('assets/images/meetppllogin.png'),
-  Image.asset('assets/images/gethelplogin.png'),
-  Image.asset('assets/images/givehelplogin.png'),
-];
-
-class ImageSliderState extends State<ImageSlider> {
-  int _current = 0;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(children: [
-        CarouselSlider(
-            options: CarouselOptions(
-                autoPlay: true,
-                height: 450,
-                enlargeCenterPage: true,
-                aspectRatio: 2.0,
-                onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
-                }),
-            items: imgList),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: imgList.map((url) {
-            int index = imgList.indexOf(url);
-            return Container(
-              width: 8.0,
-              height: 8.0,
-              margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _current == index
-                    ? Color.fromRGBO(0, 0, 0, 0.9)
-                    : Color.fromRGBO(0, 0, 0, 0.4),
-              ),
-            );
-          }).toList(),
-        )
-      ]),
+      home: RegisterPage(),
     );
   }
 }
