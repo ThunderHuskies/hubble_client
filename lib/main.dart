@@ -4,13 +4,18 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'RegisterPage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 // Future<void> main() async {
 //   // WidgetsFlutterBinding.ensureInitialized();
 //   // await Firebase.initializeApp();
-//   // FirebaseFunctions.instance
+//   // FirebaseFunctions.instanl
 //   //     .useFunctionsEmulator(origin: 'http://localhost:5001');
 //   runApp(MyApp());
 // }
@@ -45,17 +50,13 @@ void main() => runApp(MyApp());
 // }
 
 class MyApp extends StatelessWidget {
-  void getStarted() {
-    print("pressed");
-  }
-
   @override
   Widget build(BuildContext context) {
     // Future<List<User>> futureUsers = getUsers();
     // print(futureUsers);
 
     return MaterialApp(
-      title: 'Flutter Card Carousel App',
+      title: 'hubble',
       home: RegisterPage(),
     );
   }

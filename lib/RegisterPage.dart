@@ -3,13 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
+import './registration/phone.dart';
 
 class RegisterPage extends StatelessWidget {
   // FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<void> signIn() async {}
-
-  Future<void> getStarted() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,8 @@ class RegisterPage extends StatelessWidget {
               CupertinoButton(
                 child: Text("Get started"),
                 onPressed: () {
-                  getStarted();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => EnterPhone()));
                 },
                 color: Colors.blue,
               ),

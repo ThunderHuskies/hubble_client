@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "209134268918-6f8vt8umd1mmsb2slahhh6in2q8vfkn3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thunderhuskies.hubble",
+            "certificate_hash": "df00d01e3a3dcb498c27921b17610bceb514a2bb"
+          }
+        },
+        {
           "client_id": "209134268918-e171542q7idu5idduag52skhrh9s7pdv.apps.googleusercontent.com",
           "client_type": 3
         }
