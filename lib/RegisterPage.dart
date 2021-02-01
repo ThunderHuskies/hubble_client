@@ -4,11 +4,17 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import './registration/phone.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatelessWidget {
   // FirebaseAuth auth = FirebaseAuth.instance;
 
-  Future<void> signIn() async {}
+  Future<void> signIn() async {
+    // await auth.signInWithCredential(credential);
+    // print(
+    //     "Phone Number already verfied and signed in: ${auth.currentUser.uid}");
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
