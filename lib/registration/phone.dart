@@ -6,26 +6,28 @@ import 'package:flutter/semantics.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import '../home/Home.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 final TextEditingController phoneTextController = TextEditingController();
 final TextEditingController smsVerificationController = TextEditingController();
 String _verificationId;
+bool isPhoneVerified = true;
 
-void signIn() async {
+void signIn(BuildContext context) async {
   try {
     AuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId,
         smsCode: smsVerificationController.text);
     User user = (await auth.signInWithCredential(credential)).user;
-
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
     print("Success: ${user.uid}");
   } catch (e) {
     print('failed' + e.toString());
   }
 }
 
-void validatePhone() async {
+Future<void> validatePhone(BuildContext context) async {
   // user already verified on device
   PhoneVerificationCompleted verificationCompleted =
       (PhoneAuthCredential phoneAuthCredential) async {
@@ -45,7 +47,9 @@ void validatePhone() async {
   PhoneCodeSent codeSent =
       (String verificationId, [int forceResendingToken]) async {
     print('Please check your phone for the verification code.');
-    verificationId = verificationId;
+    _verificationId = verificationId;
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ValidatePhone()));
   };
 
   PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout =
@@ -57,14 +61,13 @@ void validatePhone() async {
   try {
     await auth.verifyPhoneNumber(
         phoneNumber: phoneTextController.text,
-        timeout: const Duration(seconds: 5),
+        timeout: const Duration(seconds: 60),
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,
         codeSent: codeSent,
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   } catch (e) {
     print("Failed to Verify Phone Number: ${e}");
-    print(phoneTextController.text);
   }
 }
 
@@ -94,11 +97,7 @@ class EnterPhone extends StatelessWidget {
       ElevatedButton(
         child: Text('Register'),
         onPressed: () {
-          try {
-            validatePhone();
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ValidatePhone()));
-          } catch (e) {}
+          validatePhone(context);
         },
       ),
     ])));
@@ -114,7 +113,8 @@ class ValidatePhone extends StatelessWidget {
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       TextField(
         controller: smsVerificationController,
-        decoration: new InputDecoration(labelText: "Enter your number"),
+        decoration: new InputDecoration(
+            labelText: "Enter the 4-digit verification code"),
         keyboardType: TextInputType.number,
         inputFormatters: <TextInputFormatter>[
           FilteringTextInputFormatter.digitsOnly
@@ -129,7 +129,7 @@ class ValidatePhone extends StatelessWidget {
       ElevatedButton(
         child: Text('Validate'),
         onPressed: () {
-          signIn();
+          signIn(context);
         },
       ),
     ])));
