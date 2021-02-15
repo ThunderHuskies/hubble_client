@@ -81,8 +81,29 @@ class EnterPhone extends StatelessWidget {
     return Scaffold(
         body: Center(
             child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text("Welcome to hubble"),
+                Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        SizedBox(height: 50),
+      Image.asset('assets/images/phoneVerification.png', scale: 1),
+      RichText(
+        text: TextSpan(
+          text: "Welcome to ",
+          children: [
+            TextSpan(
+              text: "hubble",
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+                ),
+              )
+          ],
+        style: TextStyle(color: Colors.black, fontSize: 24)),
+      textAlign: TextAlign.center,
+      ),
+      SizedBox(height: 50),
       // TextField(
       //   controller: phoneTextController,
       //   decoration: new InputDecoration(
@@ -115,8 +136,9 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
   Widget build(BuildContext context) {
     return Form(
       key: formKey,
-      child: Container(
-        child: Column(
+        child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 30),
+          child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             InternationalPhoneNumberInput(
@@ -135,7 +157,7 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
               //customs
               maxLength: 12,
               hintText: '(xxx) xxx-xxxx',
-              spaceBetweenSelectorAndTextField: 0,
+              spaceBetweenSelectorAndTextField: 5,
               keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
               // keyboardType: TextInputType.number,
               initialValue: number,
@@ -147,6 +169,7 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
                 savedNumber = number.parseNumber();
               },
             ),
+            SizedBox(height: 20),
             ElevatedButton(
               child: Text('Go back'),
               onPressed: () {
@@ -340,6 +363,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         fieldHeight: 80,
                         fieldWidth: 60,
                         //For Cell Colors
+                        inactiveColor: Colors.black26,
                         inactiveFillColor: Colors.white,
                         activeFillColor:
                             hasError ? Colors.lightBlue[100] : Colors.white,

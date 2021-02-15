@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import './registration/phone.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatelessWidget {
   // FirebaseAuth auth = FirebaseAuth.instance;
@@ -42,7 +42,8 @@ class RegisterPage extends StatelessWidget {
               ),
               Image.asset('assets/images/orlogin.png', scale: 3.5),
               CupertinoButton(
-                child: Text("Sign in"),
+                //linda remember to change this and actually add styling LOL
+                child: Text("    Sign in    "),
                 onPressed: () {
                   signIn();
                 },
