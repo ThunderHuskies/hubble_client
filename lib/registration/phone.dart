@@ -147,12 +147,6 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
                 savedNumber = number.parseNumber();
               },
             ),
-            // RaisedButton(
-            //   onPressed: () {
-            //     formKey.currentState.validate();
-            //   },
-            //   child: Text('Validate'),
-            // ),
             ElevatedButton(
               child: Text('Go back'),
               onPressed: () {
@@ -173,7 +167,6 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
   }
   
   void pushSaved() {
-    // PinCodeVerificationScreen("+12348882222");
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (BuildContext context) {
@@ -181,10 +174,18 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
               body: Center(
                   child:
                       Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  Text("Verification code"),
+                  Image.asset('assets/images/mail.png', scale: 1.0),
+                  SizedBox(height: 50),
+                  Text("Verification code",
+                  style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  SizedBox(height: 10),
                   ConstrainedBox(
                     child: PinCodeVerificationScreen("+15872845788"),
-                    constraints: BoxConstraints(maxHeight: 500),
+                    constraints: BoxConstraints(maxHeight: 400),
                   ),
                 ])));
         },
@@ -207,30 +208,31 @@ class ValidatePhone extends StatelessWidget {
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      TextField(
-        controller: smsVerificationController,
-        decoration: new InputDecoration(
-            labelText: "Enter the 4-digit verification code"),
-        keyboardType: TextInputType.number,
-        inputFormatters: <TextInputFormatter>[
-          FilteringTextInputFormatter.digitsOnly
-        ],
-      ),
-      ElevatedButton(
-        child: Text('Go back'),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      ),
-      ElevatedButton(
-        child: Text('Validate'),
-        onPressed: () {
-          signIn(context);
-        },
-      ),
-    ])));
-
-    
+                  TextField(
+                    controller: smsVerificationController,
+                    decoration: new InputDecoration(
+                        labelText: "Enter the 4-digit verification code"),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
+                  ),
+                  ElevatedButton(
+                    child: Text('Go back'),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                  ElevatedButton(
+                    child: Text('Validate'),
+                    onPressed: () {
+                      signIn(context);
+                    },
+                  ),
+                ]
+              )
+            )
+          );
   }
 }
 
@@ -283,11 +285,14 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
         child: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          child: ListView(
+          child: MediaQuery.removePadding(
+            context: context,
+            removeTop: true,
+            child: ListView(
             children: <Widget>[
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 8),
+                    const EdgeInsets.symmetric(horizontal: 30.0, vertical: 1),
                 child: RichText(
                   text: TextSpan(
                       text: "Please type the verification code sent to ",
@@ -385,7 +390,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 ),
               ),
               SizedBox(
-                height: 20,
+                height: 5,
               ),
               RichText(
                 textAlign: TextAlign.center,
@@ -403,7 +408,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     ]),
               ),
               SizedBox(
-                height: 14,
+                height: 10,
               ),
               Container(
                 margin:
@@ -455,7 +460,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                     ]),
               ),
               SizedBox(
-                height: 16,
+                height: 5,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -470,6 +475,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                 ],
               )
             ],
+          ),
           ),
         ),
       ),
