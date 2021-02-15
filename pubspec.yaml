@@ -35,6 +35,11 @@ dependencies:
   smooth_page_indicator: ^0.2.0
   #carousel_slider
   carousel_slider: ^2.3.1
+
+  #intl_phone_number_input 
+  intl_phone_number_input: ^0.6.0
+  #verification code boxes
+  pin_code_fields: ^6.1.0
   
 dev_dependencies:
   flutter_test:
