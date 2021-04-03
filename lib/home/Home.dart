@@ -193,7 +193,7 @@ class _ConnectionsState extends State<Connections> {
                                     ListTile(
                                       leading: CircleAvatar(),
                                       title: Text(document.data()['name']),
-                                      subtitle: Text("chicken"),
+                                      subtitle: Text(document.data()['major']),
                                       trailing:
                                           Icon(Icons.arrow_forward_ios_rounded),
                                     )
