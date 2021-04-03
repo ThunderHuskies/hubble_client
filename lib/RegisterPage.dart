@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import './registration/phone.dart';
+import 'home/Home.dart';
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -45,6 +46,7 @@ class RegisterPage extends StatelessWidget {
                 //linda remember to change this and actually add styling LOL
                 child: Text("    Sign in    "),
                 onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
                   signIn();
                 },
                 color: Colors.blue,
