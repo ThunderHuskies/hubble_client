@@ -5,6 +5,8 @@ import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import './registration/phone.dart';
 import './home/Home.dart';
+=======
+
 // import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatelessWidget {

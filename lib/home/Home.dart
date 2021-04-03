@@ -1,6 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/semantics.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import '../home/Profile.dart';
 
 class Home extends StatefulWidget {
@@ -18,18 +22,7 @@ class _HomePageState extends State<Home> {
   }
 
   static List<Widget> _widgetOptions = <Widget>[
-    Scaffold(
-        body: Center(
-            // paste inside here ur card code
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      ElevatedButton(
-        child: Text('WE DID IT HOME'),
-        onPressed: () {
-          print('chee');
-        },
-      ),
-    ]))),
+    UserCard(), 
     // page 2
     Connections(),
     //page 3
@@ -142,6 +135,77 @@ class _HomePageState extends State<Home> {
   }
 }
 
+class UserCard extends StatelessWidget {
+  // Home page
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Home',
+      home: Scaffold(
+          appBar: AppBar(
+              title: Image.asset("assets/images/plane.png", scale: 1.0),
+              bottomOpacity: 0,
+              backgroundColor: Colors.white,
+              toolbarHeight: 75.0,
+              elevation: 0.0
+            ),
+        body: Padding(
+            child: UserCards()
+        ),
+      ));
+  }
+}
+
+class UserCards extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return UserCardsState();
+  }
+}
+
+final List<Image> imgList = [
+  Image.asset('assets/images/welcome0.png'),
+  Image.asset('assets/images/welcome1.png'),
+  Image.asset('assets/images/welcome2.png'),
+  Image.asset('assets/images/welcome3.png'),
+];
+
+class UserCardsState extends State<UserCards> {
+  int _current = 0;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(children: [
+        CarouselSlider(
+            options: CarouselOptions(
+                height: 690,
+                enlargeCenterPage: true,
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                }),
+            items: imgList),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: imgList.map((url) {
+            int index = imgList.indexOf(url);
+            return Container(
+              width: 8.0,
+              height: 8.0,
+              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 2.0),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: _current == index
+                    ? Color.fromRGBO(0, 0, 0, 0.9)
+                    : Color.fromRGBO(0, 0, 0, 0.4),
+              ),
+            );
+          }).toList(),
+        )
+      ]),
+    );
+
 class Connections extends StatefulWidget {
   @override
   _ConnectionsState createState() => _ConnectionsState();
@@ -202,5 +266,5 @@ class _ConnectionsState extends State<Connections> {
                       );
                   }
                 })));
-  }
-}
+    
+

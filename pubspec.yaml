@@ -42,6 +42,9 @@ dependencies:
   #verification code boxes
   pin_code_fields: ^7.0.0
   
+  #tinder swipe cards
+  flutter_tindercard: ^0.1.7
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
