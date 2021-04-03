@@ -1,18 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Profile extends StatelessWidget {
+  final DocumentSnapshot document;
+
+  Profile({Key key, @required this.document}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(children: [
         Container(
           alignment: Alignment.center,
-          child: Image.asset(
-            'assets/images/rachel.jpg',
+          child: Image(
+            image: NetworkImage(document.data()['image']),
           ),
         ),
         Padding(
@@ -25,7 +28,7 @@ class Profile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Rachel Chiu",
+                  document.data()['name'],
                   style: TextStyle(fontSize: 30),
                 ),
                 Padding(
@@ -34,8 +37,21 @@ class Profile extends StatelessWidget {
                 Text(
                   "Sophomore",
                 ),
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        document.data()['courses'][0],
+                      ),
+                      Text(
+                        document.data()['courses'][1],
+                      ),
+                      Text(
+                        document.data()['courses'][2],
+                      ),
+                    ]),
                 Text(
-                  "According to all known laws of aviation, there is no way a bee should be able to fly",
+                  document.data()['hobbies'],
                 ),
               ]),
         ),
