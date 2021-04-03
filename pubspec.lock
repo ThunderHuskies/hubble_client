@@ -29,6 +29,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+
   charcode:
     dependency: transitive
     description:
@@ -42,7 +43,7 @@ packages:
       name: clock
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.0"
+   version: "1.1.0"
   cloud_firestore:
     dependency: "direct main"
     description:
@@ -165,6 +166,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_tindercard:
+    dependency: "direct main"
+    description:
+      name: flutter_tindercard
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.9"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -346,3 +354,4 @@ packages:
 sdks:
   dart: ">=2.12.0 <3.0.0"
   flutter: ">=2.0.0"
+
