@@ -1,7 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/semantics.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,7 +20,7 @@ class _HomePageState extends State<Home> {
   }
 
   static List<Widget> _widgetOptions = <Widget>[
-    UserCard(), 
+    UserCard(),
     // page 2
     Connections(),
     //page 3
@@ -140,19 +138,16 @@ class UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Home',
-      home: Scaffold(
+        title: 'Home',
+        home: Scaffold(
           appBar: AppBar(
               title: Image.asset("assets/images/plane.png", scale: 1.0),
               bottomOpacity: 0,
               backgroundColor: Colors.white,
               toolbarHeight: 75.0,
-              elevation: 0.0
-            ),
-        body: Padding(
-            child: UserCards()
-        ),
-      ));
+              elevation: 0.0),
+          body: UserCards(),
+        ));
   }
 }
 
@@ -171,7 +166,7 @@ final List<Image> imgList = [
 ];
 
 class UserCardsState extends State<UserCards> {
-  int _current = 0;
+  // int _current = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,30 +176,32 @@ class UserCardsState extends State<UserCards> {
                 height: 690,
                 enlargeCenterPage: true,
                 onPageChanged: (index, reason) {
-                  setState(() {
-                    _current = index;
-                  });
+                  // setState(() {
+                  //   _current = index;
+                  // });
                 }),
             items: imgList),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: imgList.map((url) {
-            int index = imgList.indexOf(url);
-            return Container(
-              width: 8.0,
-              height: 8.0,
-              margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 2.0),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: _current == index
-                    ? Color.fromRGBO(0, 0, 0, 0.9)
-                    : Color.fromRGBO(0, 0, 0, 0.4),
-              ),
-            );
-          }).toList(),
-        )
+        // Row(
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: imgList.map((url) {
+        //     int index = imgList.indexOf(url);
+        //     return Container(
+        //       width: 8.0,
+        //       height: 8.0,
+        //       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 2.0),
+        //       decoration: BoxDecoration(
+        //         shape: BoxShape.circle,
+        //         color: _current == index
+        //             ? Color.fromRGBO(0, 0, 0, 0.9)
+        //             : Color.fromRGBO(0, 0, 0, 0.4),
+        //       ),
+        //     );
+        //   }).toList(),
+        // )
       ]),
     );
+  }
+}
 
 class Connections extends StatefulWidget {
   @override
@@ -266,5 +263,5 @@ class _ConnectionsState extends State<Connections> {
                       );
                   }
                 })));
-    
-
+  }
+}
