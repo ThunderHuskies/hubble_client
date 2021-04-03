@@ -103,15 +103,6 @@ class EnterPhone extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 50),
-          // TextField(
-          //   controller: phoneTextController,
-          //   decoration: new InputDecoration(
-          //       labelText: "Enter your phone number (+x xxx xxx xxxx"),
-          //   keyboardType: TextInputType.number,
-          //     inputFormatters: <TextInputFormatter>[
-          //       FilteringTextInputFormatter.digitsOnly
-          //     ],
-          // ),
           PhoneNumberInput(),
         ])));
   }
@@ -228,7 +219,7 @@ class PinCodeVerificationScreen extends StatefulWidget {
 class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   var onTapRecognizer;
 
-  TextEditingController textEditingController = TextEditingController(); 
+  TextEditingController textEditingController = TextEditingController();
 
   StreamController<ErrorAnimationType> errorController;
 
