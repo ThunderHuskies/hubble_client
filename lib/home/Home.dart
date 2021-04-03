@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../home/Profile.dart';
@@ -160,83 +161,46 @@ class _ConnectionsState extends State<Connections> {
                 ),
               ];
             },
-            body: Column(
-              children: [
-                Card(
-                    child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => Profile(),
-                              ));
-                        },
-                        child: Column(children: <Widget>[
-                          const ListTile(
-                            leading: CircleAvatar(),
-                            title: Text("Rachel Chiu"),
-                            subtitle: Text("Sophomore"),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                          )
-                        ]))),
-                Card(
-                    child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          print("print");
-                        },
-                        child: Column(children: <Widget>[
-                          const ListTile(
-                            leading: CircleAvatar(),
-                            title: Text("Vienna Cheng"),
-                            subtitle: Text("Freshmen"),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                          )
-                        ]))),
-                Card(
-                    child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          print("print");
-                        },
-                        child: Column(children: <Widget>[
-                          const ListTile(
-                            leading: CircleAvatar(),
-                            title: Text("Nick Miller"),
-                            subtitle: Text("Senior"),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                          )
-                        ]))),
-                Card(
-                    child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          print("print");
-                        },
-                        child: Column(children: <Widget>[
-                          const ListTile(
-                            leading: CircleAvatar(),
-                            title: Text("Junho Kim"),
-                            subtitle: Text("Junior"),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                          )
-                        ]))),
-                Card(
-                    child: InkWell(
-                        splashColor: Colors.blue.withAlpha(30),
-                        onTap: () {
-                          print("print");
-                        },
-                        child: Column(children: <Widget>[
-                          const ListTile(
-                            leading: CircleAvatar(),
-                            title: Text("Steven Le"),
-                            subtitle: Text("Senior"),
-                            trailing: Icon(Icons.arrow_forward_ios_rounded),
-                          )
-                        ]))),
-              ],
-            )));
+            body: StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance.collection("users").snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError)
+                    return new Center(child: Text('${snapshot.error}'));
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return new Center(child: new CircularProgressIndicator());
+                    default:
+                      if (!snapshot.hasData) {
+                        return new Center(child: Text('No matches!'));
+                      }
+                      return ListView(
+                        children:
+                            snapshot.data.docs.map((DocumentSnapshot document) {
+                          return Card(
+                              child: InkWell(
+                                  splashColor: Colors.blue.withAlpha(30),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => Profile(),
+                                        ));
+                                  },
+                                  child: Column(children: <Widget>[
+                                    ListTile(
+                                      leading: CircleAvatar(),
+                                      title: Text(document.data()['name']),
+                                      subtitle: Text("chicken"),
+                                      trailing:
+                                          Icon(Icons.arrow_forward_ios_rounded),
+                                    )
+                                  ])));
+                        }).toList(),
+                      );
+                  }
+                })));
   }
 }

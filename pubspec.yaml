@@ -23,23 +23,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  firebase_core: ^0.7.0
-  firebase_auth: ^0.20.0+1
+  firebase_core: ^1.0.2
+  firebase_auth: ^1.0.1
+  cloud_firestore: ^1.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.0
-  http: ^0.12.2
-  cloud_functions: "^0.9.0"
+  http: ^0.13.1
+  cloud_functions: "^1.0.2"
   #add the smooth scrolling dots for login page
   smooth_page_indicator: ^0.2.0
   #carousel_slider
-  carousel_slider: ^2.3.1
+  carousel_slider: ^3.0.0
 
   #intl_phone_number_input 
-  intl_phone_number_input: ^0.6.0
+  intl_phone_number_input: ^0.7.0
   #verification code boxes
-  pin_code_fields: ^6.1.0
+  pin_code_fields: ^7.0.0
   
 dev_dependencies:
   flutter_test:
