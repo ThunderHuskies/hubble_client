@@ -20,7 +20,8 @@ void signIn(BuildContext context) async {
     AuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId, smsCode: currentText);
     User user = (await auth.signInWithCredential(credential)).user;
-    Navigator.push(context, MaterialPageRoute(builder: (context) => Home()));
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Home(user: user)));
     print("Success: ${user.uid}");
   } catch (e) {
     verificationError = true;
