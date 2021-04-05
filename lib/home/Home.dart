@@ -259,15 +259,18 @@ class Connections extends StatefulWidget {
 class _ConnectionsState extends State<Connections> {
   @override
   Widget build(BuildContext context) {
-    getConnectionsList() {
-      FirebaseFirestore.instance
+    Future<List> getConnectionsList() async {
+      var connectionList = [];
+      await FirebaseFirestore.instance
           .collection("users")
           .doc(widget.user.uid)
           .get()
           .then((DocumentSnapshot document) {
-        print(document.data()['connections']);
-        return document.data()['connections'];
+        connectionList = document.data()['connections'];
+        print(connectionList);
       });
+      print(connectionList);
+      return connectionList;
     }
 
     return CupertinoPageScaffold(
@@ -281,54 +284,65 @@ class _ConnectionsState extends State<Connections> {
                 ),
               ];
             },
-            body: StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("users")
-                    .where(FieldPath.documentId, whereIn: getConnectionsList())
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError)
-                    return new Center(child: Text('${snapshot.error}'));
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return new Center(child: new CircularProgressIndicator());
-                    default:
-                      if (!snapshot.hasData) {
-                        return new Center(child: Text('No matches!'));
-                      }
-                      return ListView(
-                        children:
-                            snapshot.data.docs.map((DocumentSnapshot document) {
-                          return Card(
-                              child: InkWell(
-                                  splashColor: Colors.blue.withAlpha(30),
-                                  onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Profile(
-                                            document: document,
-                                          ),
-                                        ));
-                                  },
-                                  child: Column(children: <Widget>[
-                                    ListTile(
-                                      leading: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            document.data()['image']),
-                                      ),
-                                      title: Text(document.data()['name']),
-                                      subtitle: Text(document.data()['major']),
-                                      trailing:
-                                          Icon(Icons.arrow_forward_ios_rounded),
-                                    )
-                                  ])));
-                        }).toList(),
-                      );
-                  }
-                })));
+            body: FutureBuilder<List>(
+              future: getConnectionsList(),
+              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+                if (snapshot.hasData) {
+                  return StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection("users")
+                          .where(FieldPath.documentId, whereIn: snapshot.data)
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<QuerySnapshot> snapshot) {
+                        if (snapshot.hasError)
+                          return new Center(child: Text('${snapshot.error}'));
+                        switch (snapshot.connectionState) {
+                          case ConnectionState.none:
+                          case ConnectionState.waiting:
+                            return new Center(
+                                child: new CircularProgressIndicator());
+                          default:
+                            if (!snapshot.hasData) {
+                              return new Center(child: Text('No matches!'));
+                            }
+                            return ListView(
+                              children: snapshot.data.docs
+                                  .map((DocumentSnapshot document) {
+                                return Card(
+                                    child: InkWell(
+                                        splashColor: Colors.blue.withAlpha(30),
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => Profile(
+                                                  document: document,
+                                                ),
+                                              ));
+                                        },
+                                        child: Column(children: <Widget>[
+                                          ListTile(
+                                            leading: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  document.data()['image']),
+                                            ),
+                                            title:
+                                                Text(document.data()['name']),
+                                            subtitle:
+                                                Text(document.data()['major']),
+                                            trailing: Icon(Icons
+                                                .arrow_forward_ios_rounded),
+                                          )
+                                        ])));
+                              }).toList(),
+                            );
+                        }
+                      });
+                }
+                return Center(child: CircularProgressIndicator());
+              },
+            )));
   }
 }
 
