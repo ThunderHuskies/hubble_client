@@ -34,7 +34,7 @@ class Profile extends StatelessWidget {
                       image: NetworkImage(document.data()['image']),
                       height: (MediaQuery.of(context).size.height) / 2,
                       width: MediaQuery.of(context).size.width,
-                      fit: BoxFit.fitWidth)),
+                      fit: BoxFit.cover)),
             ),
             Padding(
               padding: EdgeInsets.all(15.0),
@@ -55,9 +55,24 @@ class Profile extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.all(3.0),
                         ),
-                        Text("University of British Columbia",
+                        Text(document.data()['school'],
                             style: TextStyle(fontSize: 17)),
-                        Text("Sophomore", style: TextStyle(fontSize: 17)),
+                        Row(
+                          children: [
+                            Text(document.data()['yearLevel'],
+                                style: TextStyle(fontSize: 17)),
+                            Padding(
+                              padding: EdgeInsets.all(5.0),
+                            ),
+                            Text("|", style: TextStyle(fontSize: 17)),
+                            Padding(
+                              padding: EdgeInsets.all(5.0),
+                            ),
+                            Text(
+                                "Looking for: ${document.data()['lookingFor']}",
+                                style: TextStyle(fontSize: 17)),
+                          ],
+                        ),
                         Padding(
                           padding: EdgeInsets.all(5.0),
                         ),
@@ -107,6 +122,26 @@ class Profile extends StatelessWidget {
                         Divider(
                           color: Colors.black,
                         ),
+                        Padding(
+                          padding: EdgeInsets.all(5.0),
+                        ),
+                        Text("Clubs", style: TextStyle(fontSize: 17)),
+                        Padding(
+                          padding: EdgeInsets.all(5.0),
+                        ),
+                        Text(
+                          document.data()['clubs'],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(5.0),
+                        ),
+                        Divider(
+                          color: Colors.black,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(5.0),
+                        ),
+                        Text("About me", style: TextStyle(fontSize: 17)),
                         Padding(
                           padding: EdgeInsets.all(5.0),
                         ),
