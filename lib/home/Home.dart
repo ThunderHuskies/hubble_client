@@ -108,7 +108,7 @@ class UserCard extends StatelessWidget {
         title: 'Home',
         home: Scaffold(
           appBar: AppBar(
-              title: Image.asset("assets/images/plane.png", scale: 1.0),
+              title: Image.asset("assets/images/plane.png", scale: 16),
               bottomOpacity: 0,
               backgroundColor: Colors.white,
               toolbarHeight: 75.0,
@@ -139,9 +139,13 @@ class UserCardsState extends State<UserCards> {
           return Text("${snapshot.error}");
         } else if (snapshot.hasData) {
           List<MatchRating> matchData = snapshot.data;
+          List<String> userUID = [];
+          userUID.add(widget.user.uid);
           return StreamBuilder<QuerySnapshot>(
-              stream:
-                  FirebaseFirestore.instance.collection("users").snapshots(),
+            stream: FirebaseFirestore.instance
+                .collection("users")
+                .where(FieldPath.documentId, whereNotIn: userUID)
+                .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError)
@@ -208,19 +212,20 @@ class UserCardsState extends State<UserCards> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Row(children: [
-                                                    Text(
-                                                      document.data()['name'],
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Open Sans',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 25.0),
-                                                    ),
+                                                    Container(
+                                                       child: Text(
+                                                          document.data()['name'],
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Open Sans',
+                                                              color: Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                              fontSize: 25.0),
+                                                    )),
                                                     Padding(
                                                       padding:
-                                                          EdgeInsets.all(3.5),
+                                                          EdgeInsets.all(2.5),
                                                     ),
                                                     Text(
                                                       () {
@@ -245,9 +250,10 @@ class UserCardsState extends State<UserCards> {
                                                         EdgeInsets.all(2.5),
                                                   ),
                                                   Text(document.data()['major'],
+
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                      )),
+                                                      ))),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(1.0),
@@ -255,16 +261,17 @@ class UserCardsState extends State<UserCards> {
                                                   Text(
                                                       document
                                                           .data()['yearLevel'],
+
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                      )),
+                                                      ))),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(20.0),
                                                   ),
                                                 ]),
                                             Padding(
-                                              padding: EdgeInsets.all(15.0),
+                                              padding: EdgeInsets.only(right: 8.0),
                                             ),
                                             Column(
                                               crossAxisAlignment:
