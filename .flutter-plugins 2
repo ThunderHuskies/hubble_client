@@ -1,0 +1,12 @@
+# This is a generated file; do not edit or check into version control.
+cloud_firestore=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/cloud_firestore-1.0.3/
+cloud_firestore_web=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/cloud_firestore_web-1.0.3/
+cloud_functions=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/cloud_functions-1.0.2/
+cloud_functions_web=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/cloud_functions_web-4.0.2/
+firebase_auth=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/firebase_auth-1.0.1/
+firebase_auth_web=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/firebase_auth_web-1.0.3/
+firebase_core=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/firebase_core-1.0.2/
+firebase_core_web=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/firebase_core_web-1.0.2/
+libphonenumber=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/libphonenumber-2.0.0/
+libphonenumber_plugin=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/libphonenumber_plugin-0.2.3/
+libphonenumber_web=/Users/lindama/.pub-cache/hosted/pub.dartlang.org/libphonenumber_web-0.2.0+1/
