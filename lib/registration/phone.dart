@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:http/http.dart';
 import '../home/Home.dart';
+// import 'package:cloud_functions/cloud_functions.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 String savedNumber = "";
@@ -438,7 +440,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Flexible(
-                        child: FlatButton(
+                        child: TextButton(
                       child: Text("Clear"),
                       onPressed: () {
                         textEditingController.clear();

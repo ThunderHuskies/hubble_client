@@ -2,11 +2,52 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:math' as math;
 import 'dart:async';
+import 'dart:convert';
 
 import '../home/Profile.dart';
+
+Future<List<MatchRating>> findMatches(String uid) async {
+  List<MatchRating> matchList = [];
+  final response = await http.post(
+    Uri.parse(
+        'https://us-central1-c-students-b7a3d.cloudfunctions.net/findMatches'),
+    headers: {"Content-Type": "application/json"},
+    body: jsonEncode(<String, String>{
+      'uid': uid,
+    }),
+  );
+
+  if (response.statusCode == 200) {
+    var jsonList = jsonDecode(response.body);
+    for (var match in jsonList) {
+      matchList.add(MatchRating.fromJson(match));
+    }
+    return matchList;
+  } else {
+    throw Exception("failed");
+  }
+}
+
+class MatchRating {
+  final String id;
+  final double rating;
+
+  MatchRating({
+    this.id,
+    this.rating,
+  });
+
+  factory MatchRating.fromJson(Map<String, dynamic> json) {
+    return MatchRating(
+      id: json['uid'],
+      rating: json['rating'].toDouble(),
+    );
+  }
+}
 
 class Home extends StatefulWidget {
   final User user;
@@ -91,160 +132,205 @@ class UserCardsState extends State<UserCards> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("users").snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError)
-                return new Center(child: Text('${snapshot.error}'));
-              switch (snapshot.connectionState) {
-                case ConnectionState.none:
-                case ConnectionState.waiting:
-                  return new Center(child: new CircularProgressIndicator());
-                default:
-                  if (!snapshot.hasData) {
-                    return new Center(child: Text('No one...yet...'));
-                  }
-                  List<Widget> widgetList =
-                      snapshot.data.docs.map((DocumentSnapshot document) {
-                    return Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: InkWell(
-                            splashColor: Colors.blue.withAlpha(30),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context2) => Profile(
-                                      document: document,
-                                    ),
-                                  ));
-                            },
-                            child: Stack(
-                              children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      image: DecorationImage(
-                                        image: NetworkImage(
-                                            document.data()['image']),
-                                        fit: BoxFit.cover,
-                                      )),
-                                ),
-                                Container(
-                                    alignment: Alignment.bottomCenter,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topCenter,
-                                        end: Alignment.bottomCenter,
-                                        colors: <Color>[
-                                          Colors.black.withAlpha(10),
-                                          Colors.black12,
-                                          Colors.black54
-                                        ],
+        body: FutureBuilder<List<MatchRating>>(
+      future: findMatches(widget.user.uid),
+      builder: (context, snapshot) {
+        if (snapshot.hasError) {
+          return Text("${snapshot.error}");
+        } else if (snapshot.hasData) {
+          List<MatchRating> matchData = snapshot.data;
+          return StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection("users").snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError)
+                  return new Center(child: Text('${snapshot.error}'));
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return new Center(child: new CircularProgressIndicator());
+                  default:
+                    if (!snapshot.hasData) {
+                      return new Center(child: Text('No one...yet...'));
+                    }
+                    int n = -1;
+                    List<Widget> widgetList =
+                        snapshot.data.docs.map((DocumentSnapshot document) {
+                      n++;
+                      return Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          child: InkWell(
+                              splashColor: Colors.blue.withAlpha(30),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context2) => Profile(
+                                        document: document,
                                       ),
-                                    ),
-                                    child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  document.data()['name'],
-                                                  style: TextStyle(
-                                                      fontFamily: 'Open Sans',
-                                                      color: Colors.white,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 25.0),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.all(2.5),
-                                                ),
-                                                Text("Sophomore",
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    )),
-                                                Padding(
-                                                  padding: EdgeInsets.all(1.0),
-                                                ),
-                                                Text(document.data()['major'],
-                                                    style: TextStyle(
-                                                      color: Colors.white,
-                                                    )),
-                                                Padding(
-                                                  padding: EdgeInsets.all(20.0),
-                                                ),
-                                              ]),
-                                          Padding(
-                                            padding: EdgeInsets.all(15.0),
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Container(
-                                                  decoration: ShapeDecoration(
-                                                    color: Colors.white,
-                                                    shape: CircleBorder(),
+                                    ));
+                              },
+                              child: Stack(
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              document.data()['image']),
+                                          fit: BoxFit.cover,
+                                        )),
+                                  ),
+                                  Container(
+                                      alignment: Alignment.bottomCenter,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(50),
+                                        gradient: LinearGradient(
+                                          begin: Alignment.topCenter,
+                                          end: Alignment.bottomCenter,
+                                          colors: <Color>[
+                                            Colors.black.withAlpha(10),
+                                            Colors.black12,
+                                            Colors.black54
+                                          ],
+                                        ),
+                                      ),
+                                      child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                          children: [
+                                            Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(children: [
+                                                    Text(
+                                                      document.data()['name'],
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Open Sans',
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25.0),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(3.5),
+                                                    ),
+                                                    Text(
+                                                      () {
+                                                        if (matchData[n]
+                                                                .rating <
+                                                            2) {
+                                                          return "😀";
+                                                        } else if (matchData[n]
+                                                                .rating <
+                                                            4) {
+                                                          return "😃";
+                                                        } else {
+                                                          return "😄";
+                                                        }
+                                                      }(),
+                                                      style: TextStyle(
+                                                          fontSize: 25.0),
+                                                    ),
+                                                  ]),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.all(2.5),
                                                   ),
-                                                  child: Transform.rotate(
-                                                    angle: -(math.pi / 5.0),
-                                                    child: IconButton(
-                                                        iconSize: 30.0,
-                                                        icon: const Icon(Icons
-                                                            .insert_link_rounded),
-                                                        onPressed: () {
-                                                          var listid = [
-                                                            document.id
-                                                          ];
-                                                          FirebaseFirestore
-                                                              .instance
-                                                              .collection(
-                                                                  "users")
-                                                              .doc(widget
-                                                                  .user.uid)
-                                                              .update({
-                                                                'connections':
-                                                                    FieldValue
-                                                                        .arrayUnion(
-                                                                            listid)
-                                                              })
-                                                              .then((value) =>
-                                                                  print(
-                                                                      "User Updated"))
-                                                              .catchError(
-                                                                  (error) => print(
-                                                                      "Failed to update user: $error"));
-                                                        }),
-                                                  )),
-                                              Padding(
-                                                padding: EdgeInsets.all(10.0),
-                                              ),
-                                            ],
-                                          )
-                                        ])),
-                              ],
-                            )));
-                  }).toList();
-                  return Column(children: [
-                    CarouselSlider(
-                        options: CarouselOptions(
-                          height: 690,
-                          enlargeCenterPage: true,
-                        ),
-                        items: widgetList)
-                  ]);
-              }
-            }));
+                                                  Text("Sophomore",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      )),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.all(1.0),
+                                                  ),
+                                                  Text(document.data()['major'],
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                      )),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.all(20.0),
+                                                  ),
+                                                ]),
+                                            // Text(
+                                            //   "${matchData[n].rating}",
+                                            // ),
+                                            Padding(
+                                              padding: EdgeInsets.all(15.0),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Container(
+                                                    decoration: ShapeDecoration(
+                                                      color: Colors.white,
+                                                      shape: CircleBorder(),
+                                                    ),
+                                                    child: Transform.rotate(
+                                                      angle: -(math.pi / 5.0),
+                                                      child: IconButton(
+                                                          iconSize: 30.0,
+                                                          icon: const Icon(Icons
+                                                              .insert_link_rounded),
+                                                          onPressed: () {
+                                                            var listid = [
+                                                              document.id
+                                                            ];
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "users")
+                                                                .doc(widget
+                                                                    .user.uid)
+                                                                .update({
+                                                                  'connections':
+                                                                      FieldValue
+                                                                          .arrayUnion(
+                                                                              listid)
+                                                                })
+                                                                .then((value) =>
+                                                                    print(
+                                                                        "User Updated"))
+                                                                .catchError(
+                                                                    (error) =>
+                                                                        print(
+                                                                            "Failed to update user: $error"));
+                                                          }),
+                                                    )),
+                                                Padding(
+                                                  padding: EdgeInsets.all(10.0),
+                                                ),
+                                              ],
+                                            )
+                                          ])),
+                                ],
+                              )));
+                    }).toList();
+                    return Column(children: [
+                      CarouselSlider(
+                          options: CarouselOptions(
+                            height: 690,
+                            enlargeCenterPage: true,
+                          ),
+                          items: widgetList)
+                    ]);
+                }
+              });
+        }
+        return Center(child: CircularProgressIndicator());
+      },
+    ));
   }
 }
 
@@ -267,9 +353,7 @@ class _ConnectionsState extends State<Connections> {
           .get()
           .then((DocumentSnapshot document) {
         connectionList = document.data()['connections'];
-        print(connectionList);
       });
-      print(connectionList);
       return connectionList;
     }
 
