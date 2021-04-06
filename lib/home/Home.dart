@@ -232,13 +232,13 @@ class UserCardsState extends State<UserCards> {
                                                         if (matchData[n]
                                                                 .rating <
                                                             2) {
-                                                          return "😀";
+                                                          return "😃";
                                                         } else if (matchData[n]
                                                                 .rating <
                                                             4) {
-                                                          return "😃";
+                                                          return "😆";
                                                         } else {
-                                                          return "😄";
+                                                          return "🤩";
                                                         }
                                                       }(),
                                                       style: TextStyle(
@@ -249,8 +249,8 @@ class UserCardsState extends State<UserCards> {
                                                     padding:
                                                         EdgeInsets.all(2.5),
                                                   ),
-                                                  Container(
-                                                    child: Text(document.data()['yearLevel'],
+                                                  Text(document.data()['major'],
+
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       ))),
@@ -258,8 +258,10 @@ class UserCardsState extends State<UserCards> {
                                                     padding:
                                                         EdgeInsets.all(1.0),
                                                   ),
-                                                  Container(
-                                                    child: Text(document.data()['major'],
+                                                  Text(
+                                                      document
+                                                          .data()['yearLevel'],
+
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       ))),
@@ -268,9 +270,6 @@ class UserCardsState extends State<UserCards> {
                                                         EdgeInsets.all(20.0),
                                                   ),
                                                 ]),
-                                            // Text(
-                                            //   "${matchData[n].rating}",
-                                            // ),
                                             Padding(
                                               padding: EdgeInsets.only(right: 8.0),
                                             ),
