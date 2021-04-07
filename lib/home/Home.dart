@@ -250,10 +250,9 @@ class UserCardsState extends State<UserCards> {
                                                         EdgeInsets.all(2.5),
                                                   ),
                                                   Text(document.data()['major'],
-
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                      ))),
+                                                      )),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(1.0),
@@ -264,7 +263,7 @@ class UserCardsState extends State<UserCards> {
 
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                      ))),
+                                                      )),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(20.0),
