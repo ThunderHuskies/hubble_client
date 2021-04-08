@@ -55,7 +55,7 @@ class Profile extends StatelessWidget {
                         Padding(
                           padding: EdgeInsets.all(3.0),
                         ),
-                        Text(document.data()['school'],
+                        Text(document.data()['major'],
                             style: TextStyle(fontSize: 17)),
                         Row(
                           children: [
@@ -154,37 +154,39 @@ class Profile extends StatelessWidget {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              //replace with urls from firestore
                               GestureDetector(
                                   onTap: () {
                                     _launchSocial(
-                                        'fb://profile/408834569303957',
-                                        'https://www.facebook.com/dorockxl');
+                                        document.data()['instagramHandle'],
+                                        '');
                                   },
                                   child: Container(
-                                      child: Image.asset("assets/images/fb.png",
-                                          scale: 10))),
+                                      child: Image.asset("assets/images/ig.png",
+                                          scale: 18))),
                               GestureDetector(
                                   onTap: () {
                                     _launchSocial(
-                                        'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=lindama200@gmail.com',
+                                        'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + document.data()['email'],
                                         '');
                                   },
                                   child: Container(
                                       child: Image.asset(
                                           "assets/images/email.png",
-                                          scale: 10))),
+                                          scale: 7.5))),
                               GestureDetector(
                                   onTap: () {
                                     _launchSocial(
-                                        'https://www.linkedin.com/in/linda--ma/',
+                                        document.data()['linkedinURL'],
                                         '');
                                   },
                                   child: Container(
                                       child: Image.asset(
                                           "assets/images/linkedin.png",
-                                          scale: 10))),
+                                          scale: 7.5)))
                             ]),
+                            SizedBox(
+                              height: 50,
+                            )
                       ]),
                 ))
           ]),
