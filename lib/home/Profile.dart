@@ -53,10 +53,13 @@ class Profile extends StatelessWidget {
                               fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(3.0),
+                          padding: EdgeInsets.all(2.0),
                         ),
-                        Text(document.data()['school'],
+                        Text(document.data()['major'],
                             style: TextStyle(fontSize: 17)),
+                        Padding(
+                          padding: EdgeInsets.all(1.0),
+                        ),
                         Row(
                           children: [
                             Text(document.data()['yearLevel'],
@@ -74,7 +77,7 @@ class Profile extends StatelessWidget {
                           ],
                         ),
                         Padding(
-                          padding: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(10.0),
                         ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import 'dart:async';
 import 'dart:convert';
 
+import '../home/EditProfile.dart';
 import '../home/Profile.dart';
 
 Future<List<MatchRating>> findMatches(String uid) async {
@@ -142,10 +143,10 @@ class UserCardsState extends State<UserCards> {
           List<String> userUID = [];
           userUID.add(widget.user.uid);
           return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("users")
-                .where(FieldPath.documentId, whereNotIn: userUID)
-                .snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .where(FieldPath.documentId, whereNotIn: userUID)
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError)
@@ -213,15 +214,15 @@ class UserCardsState extends State<UserCards> {
                                                 children: [
                                                   Row(children: [
                                                     Container(
-                                                       child: Text(
-                                                          document.data()['name'],
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  'Open Sans',
-                                                              color: Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight.bold,
-                                                              fontSize: 25.0),
+                                                        child: Text(
+                                                      document.data()['name'],
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Open Sans',
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25.0),
                                                     )),
                                                     Padding(
                                                       padding:
@@ -250,10 +251,9 @@ class UserCardsState extends State<UserCards> {
                                                         EdgeInsets.all(2.5),
                                                   ),
                                                   Text(document.data()['major'],
-
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                      ))),
+                                                      )),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(1.0),
@@ -261,17 +261,17 @@ class UserCardsState extends State<UserCards> {
                                                   Text(
                                                       document
                                                           .data()['yearLevel'],
-
                                                       style: TextStyle(
                                                         color: Colors.white,
-                                                      ))),
+                                                      )),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(20.0),
                                                   ),
                                                 ]),
                                             Padding(
-                                              padding: EdgeInsets.only(right: 8.0),
+                                              padding:
+                                                  EdgeInsets.only(right: 8.0),
                                             ),
                                             Column(
                                               crossAxisAlignment:
@@ -480,10 +480,9 @@ class AccountPage extends StatelessWidget {
                                 padding: EdgeInsets.all(15.0),
                               ),
                               CircleAvatar(
-                                //change here to be backgroundImage
                                 radius: 75,
                                 backgroundImage:
-                                    AssetImage('assets/images/porter.png'),
+                                    NetworkImage(snapshot.data['image']),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(10.0),
@@ -495,7 +494,12 @@ class AccountPage extends StatelessWidget {
                               Padding(
                                 padding: EdgeInsets.all(5.0),
                               ),
-                              Text("Sophomore"),
+                              Text(snapshot.data['major'],
+                                  style: TextStyle(fontSize: 15)),
+                              Padding(
+                                padding: EdgeInsets.all(2.0),
+                              ),
+                              Text(snapshot.data['yearLevel']),
                               Padding(
                                 padding: EdgeInsets.all(2.0),
                               ),
@@ -503,17 +507,25 @@ class AccountPage extends StatelessWidget {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.all(50.0),
+                            padding: EdgeInsets.all(30.0),
                           ),
                           Row(children: [
                             Flexible(
                                 child: Card(
+                                    child: InkWell(
+                              splashColor: Colors.blue.withAlpha(30),
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProfile(snapshot: snapshot.data),
+                                  )),
                               child: ListTile(
                                   title: Text("Edit Profile"),
                                   trailing: Icon(
                                     Icons.arrow_forward_ios_rounded,
                                   )),
-                            )),
+                            ))),
                           ]),
                           Flexible(
                             child: Card(

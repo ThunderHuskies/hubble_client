@@ -45,8 +45,8 @@ dependencies:
   #tinder swipe cards
   flutter_tindercard: ^0.1.7
 
-  #url launcher
   url_launcher: ^6.0.3
+  image_picker: ^0.7.4
   
 dev_dependencies:
   flutter_test:
