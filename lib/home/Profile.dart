@@ -4,9 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends StatelessWidget {
-  final DocumentSnapshot document;
+  final DocumentSnapshot? document;
 
-  Profile({Key key, @required this.document}) : super(key: key);
+  Profile({Key? key, @required this.document}) : super(key: key);
 
   void _launchSocial(String url, String fallbackUrl) async {
     // Don't use canLaunch because of fbProtocolUrl (fb://)
@@ -31,7 +31,7 @@ class Profile extends StatelessWidget {
               alignment: Alignment.center,
               child: FittedBox(
                   child: Image(
-                      image: NetworkImage(document.data()['image']),
+                      image: NetworkImage(document!.data()!['image']),
                       height: (MediaQuery.of(context).size.height) / 2,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover)),
@@ -48,18 +48,21 @@ class Profile extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          document.data()['name'],
+                          document!.data()!['name'],
                           style: TextStyle(
                               fontSize: 30, fontWeight: FontWeight.bold),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(3.0),
+                          padding: EdgeInsets.all(2.0),
                         ),
-                        Text(document.data()['major'],
+                        Text(document!.data()!['major'],
                             style: TextStyle(fontSize: 17)),
+                        Padding(
+                          padding: EdgeInsets.all(1.0),
+                        ),
                         Row(
                           children: [
-                            Text(document.data()['yearLevel'],
+                            Text(document!.data()!['yearLevel'],
                                 style: TextStyle(fontSize: 17)),
                             Padding(
                               padding: EdgeInsets.all(5.0),
@@ -69,12 +72,12 @@ class Profile extends StatelessWidget {
                               padding: EdgeInsets.all(5.0),
                             ),
                             Text(
-                                "Looking for: ${document.data()['lookingFor']}",
+                                "Looking for: ${document!.data()!['lookingFor']}",
                                 style: TextStyle(fontSize: 17)),
                           ],
                         ),
                         Padding(
-                          padding: EdgeInsets.all(5.0),
+                          padding: EdgeInsets.all(10.0),
                         ),
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,8 +92,8 @@ class Profile extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Center(
-                                      child:
-                                          Text(document.data()['courses'][0]))),
+                                      child: Text(
+                                          document!.data()!['courses'][0]))),
                               Container(
                                   height: 30,
                                   width: 100,
@@ -101,8 +104,8 @@ class Profile extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Center(
-                                      child:
-                                          Text(document.data()['courses'][1]))),
+                                      child: Text(
+                                          document!.data()!['courses'][1]))),
                               Container(
                                   height: 30,
                                   width: 100,
@@ -113,8 +116,8 @@ class Profile extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   child: Center(
-                                      child:
-                                          Text(document.data()['courses'][2]))),
+                                      child: Text(
+                                          document!.data()!['courses'][2]))),
                             ]),
                         Padding(
                           padding: EdgeInsets.all(5.0),
@@ -130,7 +133,7 @@ class Profile extends StatelessWidget {
                           padding: EdgeInsets.all(5.0),
                         ),
                         Text(
-                          document.data()['clubs'],
+                          document!.data()!['clubs'],
                         ),
                         Padding(
                           padding: EdgeInsets.all(5.0),
@@ -146,7 +149,7 @@ class Profile extends StatelessWidget {
                           padding: EdgeInsets.all(5.0),
                         ),
                         Text(
-                          document.data()['hobbies'],
+                          document!.data()!['hobbies'],
                         ),
                         Padding(
                           padding: EdgeInsets.all(15.0),

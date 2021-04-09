@@ -8,6 +8,7 @@ import 'dart:math' as math;
 import 'dart:async';
 import 'dart:convert';
 
+import '../home/EditProfile.dart';
 import '../home/Profile.dart';
 
 Future<List<MatchRating>> findMatches(String uid) async {
@@ -33,8 +34,8 @@ Future<List<MatchRating>> findMatches(String uid) async {
 }
 
 class MatchRating {
-  final String id;
-  final double rating;
+  final String? id;
+  final double? rating;
 
   MatchRating({
     this.id,
@@ -50,8 +51,8 @@ class MatchRating {
 }
 
 class Home extends StatefulWidget {
-  final User user;
-  Home({Key key, @required this.user}) : super(key: key);
+  final User? user;
+  Home({Key? key, @required this.user}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -99,7 +100,7 @@ class _HomePageState extends State<Home> {
 }
 
 class UserCard extends StatelessWidget {
-  final User user;
+  final User? user;
   UserCard({this.user});
   // Home page
   @override
@@ -119,7 +120,7 @@ class UserCard extends StatelessWidget {
 }
 
 class UserCards extends StatefulWidget {
-  final User user;
+  final User? user;
   UserCards({this.user});
 
   @override
@@ -133,19 +134,19 @@ class UserCardsState extends State<UserCards> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: FutureBuilder<List<MatchRating>>(
-      future: findMatches(widget.user.uid),
+      future: findMatches(widget.user!.uid),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return Text("${snapshot.error}");
         } else if (snapshot.hasData) {
-          List<MatchRating> matchData = snapshot.data;
+          List<MatchRating> matchData = snapshot.data!;
           List<String> userUID = [];
-          userUID.add(widget.user.uid);
+          userUID.add(widget.user!.uid);
           return StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance
-                .collection("users")
-                .where(FieldPath.documentId, whereNotIn: userUID)
-                .snapshots(),
+              stream: FirebaseFirestore.instance
+                  .collection("users")
+                  .where(FieldPath.documentId, whereNotIn: userUID)
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError)
@@ -160,7 +161,7 @@ class UserCardsState extends State<UserCards> {
                     }
                     int n = -1;
                     List<Widget> widgetList =
-                        snapshot.data.docs.map((DocumentSnapshot document) {
+                        snapshot.data!.docs.map((DocumentSnapshot document) {
                       n++;
                       return Card(
                           shape: RoundedRectangleBorder(
@@ -184,7 +185,7 @@ class UserCardsState extends State<UserCards> {
                                         borderRadius: BorderRadius.circular(50),
                                         image: DecorationImage(
                                           image: NetworkImage(
-                                              document.data()['image']),
+                                              document.data()!['image']),
                                           fit: BoxFit.cover,
                                         )),
                                   ),
@@ -213,15 +214,15 @@ class UserCardsState extends State<UserCards> {
                                                 children: [
                                                   Row(children: [
                                                     Container(
-                                                       child: Text(
-                                                          document.data()['name'],
-                                                          style: TextStyle(
-                                                              fontFamily:
-                                                                  'Open Sans',
-                                                              color: Colors.white,
-                                                              fontWeight:
-                                                                  FontWeight.bold,
-                                                              fontSize: 25.0),
+                                                        child: Text(
+                                                      document.data()!['name'],
+                                                      style: TextStyle(
+                                                          fontFamily:
+                                                              'Open Sans',
+                                                          color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 25.0),
                                                     )),
                                                     Padding(
                                                       padding:
@@ -230,11 +231,11 @@ class UserCardsState extends State<UserCards> {
                                                     Text(
                                                       () {
                                                         if (matchData[n]
-                                                                .rating <
+                                                                .rating! <
                                                             2) {
                                                           return "😃";
                                                         } else if (matchData[n]
-                                                                .rating <
+                                                                .rating! <
                                                             4) {
                                                           return "😆";
                                                         } else {
@@ -249,7 +250,8 @@ class UserCardsState extends State<UserCards> {
                                                     padding:
                                                         EdgeInsets.all(2.5),
                                                   ),
-                                                  Text(document.data()['major'],
+                                                  Text(
+                                                      document.data()!['major'],
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       )),
@@ -259,8 +261,7 @@ class UserCardsState extends State<UserCards> {
                                                   ),
                                                   Text(
                                                       document
-                                                          .data()['yearLevel'],
-
+                                                          .data()!['yearLevel'],
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       )),
@@ -270,7 +271,8 @@ class UserCardsState extends State<UserCards> {
                                                   ),
                                                 ]),
                                             Padding(
-                                              padding: EdgeInsets.only(right: 8.0),
+                                              padding:
+                                                  EdgeInsets.only(right: 8.0),
                                             ),
                                             Column(
                                               crossAxisAlignment:
@@ -297,7 +299,7 @@ class UserCardsState extends State<UserCards> {
                                                                 .collection(
                                                                     "users")
                                                                 .doc(widget
-                                                                    .user.uid)
+                                                                    .user!.uid)
                                                                 .update({
                                                                   'connections':
                                                                       FieldValue
@@ -340,7 +342,7 @@ class UserCardsState extends State<UserCards> {
 }
 
 class Connections extends StatefulWidget {
-  final User user;
+  final User? user;
 
   Connections({this.user});
   @override
@@ -354,10 +356,10 @@ class _ConnectionsState extends State<Connections> {
       var connectionList = [];
       await FirebaseFirestore.instance
           .collection("users")
-          .doc(widget.user.uid)
+          .doc(widget.user!.uid)
           .get()
           .then((DocumentSnapshot document) {
-        connectionList = document.data()['connections'];
+        connectionList = document.data()!['connections'];
       });
       return connectionList;
     }
@@ -396,7 +398,7 @@ class _ConnectionsState extends State<Connections> {
                               return new Center(child: Text('No matches!'));
                             }
                             return ListView(
-                              children: snapshot.data.docs
+                              children: snapshot.data!.docs
                                   .map((DocumentSnapshot document) {
                                 return Card(
                                     child: InkWell(
@@ -414,12 +416,12 @@ class _ConnectionsState extends State<Connections> {
                                           ListTile(
                                             leading: CircleAvatar(
                                               backgroundImage: NetworkImage(
-                                                  document.data()['image']),
+                                                  document.data()!['image']),
                                             ),
                                             title:
-                                                Text(document.data()['name']),
+                                                Text(document.data()!['name']),
                                             subtitle:
-                                                Text(document.data()['major']),
+                                                Text(document.data()!['major']),
                                             trailing: Icon(Icons
                                                 .arrow_forward_ios_rounded),
                                           )
@@ -436,7 +438,7 @@ class _ConnectionsState extends State<Connections> {
 }
 
 class AccountPage extends StatelessWidget {
-  final User user;
+  final User? user;
 
   AccountPage({this.user});
   @override
@@ -455,7 +457,7 @@ class AccountPage extends StatelessWidget {
             body: StreamBuilder<DocumentSnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection("users")
-                    .doc(user.uid)
+                    .doc(user!.uid)
                     .snapshots(),
                 builder: (BuildContext context,
                     AsyncSnapshot<DocumentSnapshot> snapshot) {
@@ -479,22 +481,26 @@ class AccountPage extends StatelessWidget {
                                 padding: EdgeInsets.all(15.0),
                               ),
                               CircleAvatar(
-                                //change here to be backgroundImage
                                 radius: 75,
                                 backgroundImage:
-                                    AssetImage('assets/images/porter.png'),
+                                    NetworkImage(snapshot.data!['image']),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(10.0),
                               ),
                               Text(
-                                snapshot.data['name'],
+                                snapshot.data!['name'],
                                 style: TextStyle(fontSize: 30),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(5.0),
                               ),
-                              Text("Sophomore"),
+                              Text(snapshot.data!['major'],
+                                  style: TextStyle(fontSize: 15)),
+                              Padding(
+                                padding: EdgeInsets.all(2.0),
+                              ),
+                              Text(snapshot.data!['yearLevel']),
                               Padding(
                                 padding: EdgeInsets.all(2.0),
                               ),
@@ -502,17 +508,25 @@ class AccountPage extends StatelessWidget {
                             ],
                           ),
                           Padding(
-                            padding: EdgeInsets.all(50.0),
+                            padding: EdgeInsets.all(30.0),
                           ),
                           Row(children: [
                             Flexible(
                                 child: Card(
+                                    child: InkWell(
+                              splashColor: Colors.blue.withAlpha(30),
+                              onTap: () => Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditProfile(snapshot: snapshot.data!),
+                                  )),
                               child: ListTile(
                                   title: Text("Edit Profile"),
                                   trailing: Icon(
                                     Icons.arrow_forward_ios_rounded,
                                   )),
-                            )),
+                            ))),
                           ]),
                           Flexible(
                             child: Card(
