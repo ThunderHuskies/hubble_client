@@ -6,22 +6,21 @@ import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
-import 'package:http/http.dart';
 import '../home/Home.dart';
 // import 'package:cloud_functions/cloud_functions.dart';
 
 final FirebaseAuth auth = FirebaseAuth.instance;
 String savedNumber = "";
 String currentText = "";
-String _verificationId;
+String? _verificationId;
 bool isPhoneVerified = true;
 bool verificationError = false;
 
 void signIn(BuildContext context) async {
   try {
     AuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: _verificationId, smsCode: currentText);
-    User user = (await auth.signInWithCredential(credential)).user;
+        verificationId: _verificationId!, smsCode: currentText);
+    User user = (await auth.signInWithCredential(credential)).user!;
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Home(user: user)));
     print("Success: ${user.uid}");
@@ -38,7 +37,7 @@ Future<void> validatePhone(BuildContext context) async {
       (PhoneAuthCredential phoneAuthCredential) async {
     await auth.signInWithCredential(phoneAuthCredential);
     print(
-        "Phone Number already verfied and signed in: ${auth.currentUser.uid}");
+        "Phone Number already verfied and signed in: ${auth.currentUser!.uid}");
   };
 
   //Verification failed
@@ -50,7 +49,7 @@ Future<void> validatePhone(BuildContext context) async {
 
   //Callback for when the code is sent
   PhoneCodeSent codeSent =
-      (String verificationId, [int forceResendingToken]) async {
+      (String verificationId, [int? forceResendingToken]) async {
     print('Please check your phone for the verification code.');
     _verificationId = verificationId;
     Navigator.push(
@@ -72,7 +71,7 @@ Future<void> validatePhone(BuildContext context) async {
         codeSent: codeSent,
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   } catch (e) {
-    print("Failed to Verify Phone Number: ${e}");
+    print("Failed to Verify Phone Number: $e");
     print(savedNumber);
   }
 }
@@ -156,7 +155,7 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
               formatInput: true,
               inputBorder: OutlineInputBorder(),
               onSaved: (PhoneNumber number) {
-                savedNumber = number.phoneNumber;
+                savedNumber = number.phoneNumber!;
                 print(savedNumber);
                 validatePhone(context);
               },
@@ -170,7 +169,7 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
             ),
             ElevatedButton(
               onPressed: () {
-                formKey.currentState.save();
+                formKey.currentState!.save();
               },
               child: Text('Register'),
             ),
@@ -182,7 +181,7 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller.dispose();
     super.dispose();
   }
 }
@@ -224,7 +223,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   TextEditingController textEditingController = TextEditingController();
 
-  StreamController<ErrorAnimationType> errorController;
+  StreamController<ErrorAnimationType>? errorController;
 
   bool hasError = false;
 
@@ -243,7 +242,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
 
   @override
   void dispose() {
-    errorController.close();
+    errorController!.close();
 
     super.dispose();
   }
@@ -389,12 +388,12 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                       vertical: 16.0, horizontal: 30),
                   child: ButtonTheme(
                     height: 50,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () {
                         signIn(context);
                         // conditions for validating
                         if (verificationError) {
-                          errorController.add(ErrorAnimationType
+                          errorController!.add(ErrorAnimationType
                               .shake); // Triggering error shake animation
                           setState(() {
                             hasError = true;
@@ -402,7 +401,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                         } else {
                           setState(() {
                             hasError = false;
-                            scaffoldKey.currentState.showSnackBar(SnackBar(
+                            scaffoldKey.currentState!.showSnackBar(SnackBar(
                               content: Text("Validated"),
                               duration: Duration(seconds: 2),
                             ));

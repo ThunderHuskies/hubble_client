@@ -35,7 +35,7 @@ dependencies:
   #add the smooth scrolling dots for login page
   smooth_page_indicator: ^0.2.0
   #carousel_slider
-  carousel_slider: ^3.0.0
+  carousel_slider: ^4.0.0-nullsafety.0
 
   #intl_phone_number_input 
   intl_phone_number_input: ^0.7.0

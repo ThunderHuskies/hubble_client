@@ -4,17 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends StatefulWidget {
-  final DocumentSnapshot snapshot;
+  final DocumentSnapshot? snapshot;
 
   EditProfile({this.snapshot});
 
   @override
   _EditProfileScreenState createState() =>
-      _EditProfileScreenState(snapshot: snapshot);
+      _EditProfileScreenState(snapshot: snapshot!);
 }
 
 class _EditProfileScreenState extends State<EditProfile> {
-  final DocumentSnapshot snapshot;
+  final DocumentSnapshot? snapshot;
 
   _EditProfileScreenState({this.snapshot});
 
@@ -60,13 +60,13 @@ class _EditProfileScreenState extends State<EditProfile> {
                   ),
                   CircleAvatar(
                     radius: 75,
-                    backgroundImage: NetworkImage(snapshot.data()['image']),
+                    backgroundImage: NetworkImage(snapshot!.data()!['image']),
                   ),
                   Padding(
                     padding: EdgeInsets.all(10.0),
                   ),
                   Text(
-                    snapshot.data()['name'],
+                    snapshot!.data()!['name'],
                     style: TextStyle(fontSize: 30),
                   ),
                   Padding(
@@ -89,7 +89,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                     width: 200,
                     child: TextFormField(
                         controller: TextEditingController(
-                            text: '${snapshot.data()['yearLevel']}'),
+                            text: '${snapshot!.data()!['yearLevel']}'),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         )),
@@ -110,7 +110,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                     width: 200,
                     child: TextFormField(
                         controller: TextEditingController(
-                            text: '${snapshot.data()['major']}'),
+                            text: '${snapshot!.data()!['major']}'),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                         )),
@@ -135,7 +135,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                               InputDecoration(border: OutlineInputBorder()),
                           maxLines: null,
                           controller: TextEditingController(
-                              text: '${snapshot.data()['clubs']}'))),
+                              text: '${snapshot!.data()!['clubs']}'))),
                 ],
               ),
               Padding(
@@ -156,7 +156,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                               InputDecoration(border: OutlineInputBorder()),
                           maxLines: null,
                           controller: TextEditingController(
-                              text: '${snapshot.data()['hobbies']}'))),
+                              text: '${snapshot!.data()!['hobbies']}'))),
                 ],
               ),
               OutlinedButton(
