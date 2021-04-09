@@ -160,7 +160,7 @@ class Profile extends StatelessWidget {
                               GestureDetector(
                                   onTap: () {
                                     _launchSocial(
-                                        document.data()['instagramHandle'],
+                                        document!.data()!['instagramHandle'],
                                         '');
                                   },
                                   child: Container(
@@ -169,7 +169,8 @@ class Profile extends StatelessWidget {
                               GestureDetector(
                                   onTap: () {
                                     _launchSocial(
-                                        'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' + document.data()['email'],
+                                        'https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=' +
+                                            document!.data()!['email'],
                                         '');
                                   },
                                   child: Container(
@@ -179,17 +180,16 @@ class Profile extends StatelessWidget {
                               GestureDetector(
                                   onTap: () {
                                     _launchSocial(
-                                        document.data()['linkedinURL'],
-                                        '');
+                                        document!.data()!['linkedinURL'], '');
                                   },
                                   child: Container(
                                       child: Image.asset(
                                           "assets/images/linkedin.png",
                                           scale: 7.5)))
                             ]),
-                            SizedBox(
-                              height: 50,
-                            )
+                        SizedBox(
+                          height: 50,
+                        )
                       ]),
                 ))
           ]),
