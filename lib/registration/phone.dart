@@ -404,6 +404,14 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             scaffoldKey.currentState!.showSnackBar(SnackBar(
                               content: Text("Validated"),
                               duration: Duration(seconds: 2),
+                              width: 280.0, // Width of the SnackBar.
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0, // Inner padding for SnackBar content.
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
                             ));
                           });
                         }
