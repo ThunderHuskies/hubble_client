@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hubble_client/messaging/chat.dart';
 import 'dart:math' as math;
 import 'dart:async';
 import 'dart:convert';
@@ -407,8 +408,10 @@ class _ConnectionsState extends State<Connections> {
                                           Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => Profile(
-                                                  document: document,
+                                                builder: (context) => Chat(
+                                                  user: widget.user,
+                                                  friend:
+                                                      document.data()!['uid'],
                                                 ),
                                               ));
                                         },

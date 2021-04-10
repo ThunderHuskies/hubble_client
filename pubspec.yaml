@@ -26,6 +26,7 @@ dependencies:
   firebase_core: ^1.0.2
   firebase_auth: ^1.0.1
   cloud_firestore: ^1.0.3
+  firebase_storage: ^8.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -36,17 +37,14 @@ dependencies:
   smooth_page_indicator: ^0.2.0
   #carousel_slider
   carousel_slider: ^4.0.0-nullsafety.0
-
+  cached_network_image: ^3.0.0
   #intl_phone_number_input 
   intl_phone_number_input: ^0.7.0
   #verification code boxes
   pin_code_fields: ^7.0.0
-  
-  #tinder swipe cards
-  flutter_tindercard: ^0.2.0
-
   url_launcher: ^6.0.3
   image_picker: ^0.7.4
+  shared_preferences: ^2.0.5
   
 dev_dependencies:
   flutter_test:
