@@ -312,18 +312,18 @@ class ChatScreenState extends State<ChatScreen> {
               children: <Widget>[
                 isLastMessageLeft(index)
                     ? Material(
-                        child: CachedNetworkImage(
-                          placeholder: (context, url) => Container(
-                            child: CircularProgressIndicator(),
-                            width: 35.0,
-                            height: 35.0,
-                            padding: EdgeInsets.all(10.0),
-                          ),
-                          imageUrl: document.data()!['image'],
-                          width: 35.0,
-                          height: 35.0,
-                          fit: BoxFit.cover,
-                        ),
+                        // child: CachedNetworkImage(
+                        //   placeholder: (context, url) => Container(
+                        //     child: CircularProgressIndicator(),
+                        //     width: 35.0,
+                        //     height: 35.0,
+                        //     padding: EdgeInsets.all(10.0),
+                        //   ),
+                        //   imageUrl: document.data()![],
+                        //   width: 35.0,
+                        //   height: 35.0,
+                        //   fit: BoxFit.cover,
+                        // ),
                         borderRadius: BorderRadius.all(
                           Radius.circular(18.0),
                         ),
