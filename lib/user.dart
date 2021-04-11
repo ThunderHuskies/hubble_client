@@ -16,21 +16,21 @@ class User {
   double rating;
 
   User(
-      {this.uid,
-      this.major,
-      this.hometown,
-      this.image,
-      this.instagramHandle,
-      this.school,
-      this.linkedinURL,
-      this.phone,
-      this.email,
-      this.hobbies,
-      this.clubs,
-      this.age,
-      this.name,
-      this.courses,
-      this.rating});
+      {required this.uid,
+      required this.major,
+      required this.hometown,
+      required this.image,
+      required this.instagramHandle,
+      required this.school,
+      required this.linkedinURL,
+      required this.phone,
+      required this.email,
+      required this.hobbies,
+      required this.clubs,
+      required this.age,
+      required this.name,
+      required this.courses,
+      required this.rating});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -47,6 +47,6 @@ class User {
         age: json['age'],
         name: json['name'],
         courses: json['courses'],
-        rating: json['rating']);
+        rating: json['rating'], hometown: '');
   }
 }
