@@ -8,6 +8,7 @@ import 'package:hubble_client/messaging/chat.dart';
 import 'dart:math' as math;
 import 'dart:async';
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import '../home/EditProfile.dart';
 import '../home/Profile.dart';
@@ -185,7 +186,7 @@ class UserCardsState extends State<UserCards> {
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(50),
                                         image: DecorationImage(
-                                          image: NetworkImage(
+                                          image: CachedNetworkImageProvider(
                                               document.data()!['image']),
                                           fit: BoxFit.cover,
                                         )),
@@ -439,8 +440,10 @@ class _ConnectionsState extends State<Connections> {
                                         child: Column(children: <Widget>[
                                           ListTile(
                                             leading: CircleAvatar(
-                                              backgroundImage: NetworkImage(
-                                                  document.data()!['image']),
+                                              backgroundImage:
+                                                  CachedNetworkImageProvider(
+                                                      document
+                                                          .data()!['image']),
                                             ),
                                             title:
                                                 Text(document.data()!['name']),
@@ -506,8 +509,8 @@ class AccountPage extends StatelessWidget {
                               ),
                               CircleAvatar(
                                 radius: 75,
-                                backgroundImage:
-                                    NetworkImage(snapshot.data!['image']),
+                                backgroundImage: CachedNetworkImageProvider(
+                                    snapshot.data!['image']),
                               ),
                               Padding(
                                 padding: EdgeInsets.all(10.0),
