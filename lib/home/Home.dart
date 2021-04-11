@@ -292,8 +292,11 @@ class UserCardsState extends State<UserCards> {
                                                           icon: const Icon(Icons
                                                               .insert_link_rounded),
                                                           onPressed: () {
-                                                            var listid = [
+                                                            var friendId = [
                                                               document.id
+                                                            ];
+                                                            var userId = [
+                                                              widget.user!.uid
                                                             ];
                                                             FirebaseFirestore
                                                                 .instance
@@ -305,7 +308,7 @@ class UserCardsState extends State<UserCards> {
                                                                   'connections':
                                                                       FieldValue
                                                                           .arrayUnion(
-                                                                              listid)
+                                                                              friendId)
                                                                 })
                                                                 .then((value) =>
                                                                     print(
@@ -314,6 +317,25 @@ class UserCardsState extends State<UserCards> {
                                                                     (error) =>
                                                                         print(
                                                                             "Failed to update user: $error"));
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    "users")
+                                                                .doc(
+                                                                    document.id)
+                                                                .update({
+                                                                  'connections':
+                                                                      FieldValue
+                                                                          .arrayUnion(
+                                                                              userId)
+                                                                })
+                                                                .then((value) =>
+                                                                    print(
+                                                                        'Friend Updated'))
+                                                                .catchError(
+                                                                    (error) =>
+                                                                        print(
+                                                                            "Failed to update friend: $error"));
                                                           }),
                                                     )),
                                                 Padding(
