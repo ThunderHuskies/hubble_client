@@ -11,6 +11,26 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:photo_view/photo_view.dart';
+
+class CustomMaterialPageRoute extends MaterialPageRoute {
+  @protected
+  bool get hasScopedWillPopCallback {
+    return false;
+  }
+
+  CustomMaterialPageRoute({
+    required WidgetBuilder builder,
+    required RouteSettings settings,
+    bool maintainState = true,
+    bool fullscreenDialog = false,
+  }) : super(
+          builder: builder,
+          settings: settings,
+          maintainState: maintainState,
+          fullscreenDialog: fullscreenDialog,
+        );
+}
 
 class Chat extends StatelessWidget {
   final User? user;
@@ -54,6 +74,45 @@ class Chat extends StatelessWidget {
       ),
       body: ChatScreen(user: user, friend: friend),
     );
+  }
+}
+
+class FullPhoto extends StatelessWidget {
+  final String? url;
+
+  FullPhoto({Key? key, @required this.url}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: FullPhotoScreen(url: url),
+    );
+  }
+}
+
+class FullPhotoScreen extends StatefulWidget {
+  final String? url;
+
+  FullPhotoScreen({Key? key, @required this.url}) : super(key: key);
+
+  @override
+  State createState() => FullPhotoScreenState(url: url);
+}
+
+class FullPhotoScreenState extends State<FullPhotoScreen> {
+  final String? url;
+
+  FullPhotoScreenState({Key? key, @required this.url});
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        child: PhotoView(imageProvider: CachedNetworkImageProvider(url!)));
   }
 }
 
@@ -164,7 +223,7 @@ class ChatScreenState extends State<ChatScreen> {
   Future uploadFile() async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     FirebaseStorage storage = FirebaseStorage.instance;
-    Reference reference = storage.ref().child(fileName);
+    Reference reference = storage.ref().child('messageImages/$fileName');
     UploadTask uploadTask = reference.putFile(imageFile!);
     uploadTask.whenComplete(() {
       reference.getDownloadURL().then((String imageUrl) {
@@ -280,12 +339,11 @@ class ChatScreenState extends State<ChatScreen> {
                           clipBehavior: Clip.hardEdge,
                         ),
                         onPressed: () {
-                          print('cheese');
-                          // Navigator.push(
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => FullPhoto(
-                          //             url: document.data()!['content'])));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullPhoto(
+                                      url: document.data()!['content'])));
                         },
                         padding: EdgeInsets.all(0),
                       ),

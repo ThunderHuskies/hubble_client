@@ -558,13 +558,6 @@ class AccountPage extends StatelessWidget {
                           Flexible(
                             child: Card(
                                 child: ListTile(
-                              title: Text("Change Password"),
-                              trailing: Icon(Icons.arrow_forward_ios_rounded),
-                            )),
-                          ),
-                          Flexible(
-                            child: Card(
-                                child: ListTile(
                               title: Text("Change Schools"),
                               trailing: Icon(Icons.arrow_forward_ios_rounded),
                             )),
