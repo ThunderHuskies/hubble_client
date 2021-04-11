@@ -410,8 +410,7 @@ class _ConnectionsState extends State<Connections> {
                                               MaterialPageRoute(
                                                 builder: (context) => Chat(
                                                   user: widget.user,
-                                                  friend:
-                                                      document.data()!['uid'],
+                                                  friend: document,
                                                 ),
                                               ));
                                         },
