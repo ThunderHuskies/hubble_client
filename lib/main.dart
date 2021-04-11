@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'RegisterPage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'home/Home.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -52,9 +54,47 @@ class MyApp extends StatelessWidget {
     // Future<List<User>> futureUsers = getUsers();
     // print(futureUsers);
 
-    return MaterialApp(
-      title: 'hubble',
-      home: RegisterPage(),
-    );
+    return FutureBuilder(
+      future: Authentication.initializeFirebase(context: context),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return MaterialApp(
+              title: 'hubble',
+              home: RegisterPage(),
+            );
+          } else if (snapshot.connectionState == ConnectionState.done) {
+              User? user = FirebaseAuth.instance.currentUser;
+              return MaterialApp(
+                title: 'hubble-home',
+                home: Home(user: user),
+            );
+          }
+          return CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(
+              Colors.blue,
+            ),);
+        });
+      }
+    }
+      
+class Authentication {
+  static Future<FirebaseApp> initializeFirebase({
+    required BuildContext context,
+  }) async {
+    FirebaseApp firebaseApp = await Firebase.initializeApp();
+  
+    User? user = FirebaseAuth.instance.currentUser;
+  
+    if (user != null) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (context) => Home(
+            user: user,
+          ),
+        ),
+      );
+    }
+  
+    return firebaseApp;
   }
 }

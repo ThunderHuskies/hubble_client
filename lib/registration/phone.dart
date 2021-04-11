@@ -19,7 +19,7 @@ bool verificationError = false;
 void signIn(BuildContext context) async {
   try {
     AuthCredential credential = PhoneAuthProvider.credential(
-        verificationId: _verificationId!, smsCode: currentText);
+      verificationId: _verificationId!, smsCode: currentText);
     User user = (await auth.signInWithCredential(credential)).user!;
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => Home(user: user)));
@@ -402,7 +402,9 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                           setState(() {
                             hasError = false;
                             scaffoldKey.currentState!.showSnackBar(SnackBar(
-                              content: Text("Validated"),
+                              content: Text("Validated",
+                              textAlign: TextAlign.center),
+                              backgroundColor: Colors.green,
                               duration: Duration(seconds: 2),
                               width: 280.0, // Width of the SnackBar.
                               padding: const EdgeInsets.symmetric(
