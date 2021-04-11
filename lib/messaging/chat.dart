@@ -10,6 +10,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Chat extends StatelessWidget {
   final User? user;
@@ -166,20 +167,23 @@ class ChatScreenState extends State<ChatScreen> {
     Reference reference = storage.ref().child(fileName);
     UploadTask uploadTask = reference.putFile(imageFile!);
     uploadTask.whenComplete(() {
-      imageUrl = reference.getDownloadURL() as String?;
-      setState(() {
-        isLoading = false;
-        onSendMessage(imageUrl!, 1);
+      reference.getDownloadURL().then((String imageUrl) {
+        setState(() {
+          isLoading = false;
+          onSendMessage(imageUrl, 1);
+        });
       });
     }).catchError((onError) {
       setState(() {
         isLoading = false;
       });
+      Fluttertoast.showToast(msg: "This file type is unsupported");
     });
   }
 
   void onSendMessage(String content, int type) {
     // type: 0 = text, 1 = image, 2 = sticker
+    if (content.trim() == '') return;
     textEditingController.clear();
 
     var documentReference = FirebaseFirestore.instance
@@ -494,6 +498,8 @@ class ChatScreenState extends State<ChatScreen> {
                       borderRadius: BorderRadius.circular(50.0)),
                   hintText: 'Aa',
                   hintStyle: TextStyle(color: Colors.grey),
+                  isDense: true,
+                  contentPadding: EdgeInsets.all(8),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.send),
                     onPressed: () =>
