@@ -21,8 +21,11 @@ class Chat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CupertinoNavigationBar(
-        middle: InkWell(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: Colors.black,
+        backwardsCompatibility: false,
+        title: InkWell(
           onTap: () {
             Navigator.push(
                 context,
@@ -37,9 +40,9 @@ class Chat extends StatelessWidget {
               children: [
                 CircleAvatar(
                   backgroundImage: NetworkImage(friend!.data()!['image']),
-                  maxRadius: 18,
+                  // maxRadius: 18,
                 ),
-                Padding(padding: EdgeInsets.all(5)),
+                Padding(padding: EdgeInsets.all(8)),
                 Text(
                   "${friend!.data()!['name']}",
                 ),
@@ -226,7 +229,8 @@ class ChatScreenState extends State<ChatScreen> {
                   padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                   width: 200.0,
                   decoration: BoxDecoration(
-                      color: Colors.lightBlue,
+                      //chnage text box colours
+                      color: Colors.cyan[200],
                       borderRadius: BorderRadius.circular(20.0)),
                   margin: EdgeInsets.only(
                       bottom: isLastMessageRight(index) ? 20.0 : 10.0,
@@ -244,7 +248,7 @@ class ChatScreenState extends State<ChatScreen> {
                               height: 200.0,
                               padding: EdgeInsets.all(70.0),
                               decoration: BoxDecoration(
-                                color: Colors.blue,
+                                color: Colors.cyan[200],
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(8.0),
                                 ),
@@ -335,7 +339,7 @@ class ChatScreenState extends State<ChatScreen> {
                         padding: EdgeInsets.fromLTRB(15.0, 10.0, 15.0, 10.0),
                         width: 200.0,
                         decoration: BoxDecoration(
-                            color: Colors.blue,
+                            color: Colors.cyan[200],
                             borderRadius: BorderRadius.circular(8.0)),
                         margin: EdgeInsets.only(left: 10.0),
                       )

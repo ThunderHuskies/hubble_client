@@ -424,8 +424,8 @@ class _ConnectionsState extends State<Connections> {
                                                 Text(document.data()!['name']),
                                             subtitle:
                                                 Text(document.data()!['major']),
-                                            trailing: Icon(Icons
-                                                .arrow_forward_ios_rounded),
+                                            trailing:
+                                                Icon(Icons.message_outlined),
                                           )
                                         ])));
                               }).toList(),
