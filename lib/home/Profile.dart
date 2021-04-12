@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -31,7 +32,8 @@ class Profile extends StatelessWidget {
               alignment: Alignment.center,
               child: FittedBox(
                   child: Image(
-                      image: NetworkImage(document!.data()!['image']),
+                      image: CachedNetworkImageProvider(
+                          document!.data()!['image']),
                       height: (MediaQuery.of(context).size.height) / 2,
                       width: MediaQuery.of(context).size.width,
                       fit: BoxFit.cover)),
