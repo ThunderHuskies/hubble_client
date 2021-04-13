@@ -22,7 +22,11 @@ void signIn(BuildContext context) async {
   Future<bool> checkExist(User user) async {
     bool exists = false;
     try {
-      await FirebaseFirestore.instance.collection("users").doc(user.uid).get().then((doc) {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then((doc) {
         if (doc.exists)
           exists = true;
         else
@@ -33,14 +37,19 @@ void signIn(BuildContext context) async {
       return false;
     }
   }
+
   try {
     AuthCredential credential = PhoneAuthProvider.credential(
-      verificationId: _verificationId!, smsCode: currentText);
-    User user = (await auth.signInWithCredential(credential)).user!; 
+        verificationId: _verificationId!, smsCode: currentText);
+    User user = (await auth.signInWithCredential(credential)).user!;
     bool userExists = await checkExist(user);
     print(userExists);
+    print("${user.uid}");
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => userExists ? Home(user: user) : Registration()));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                userExists ? Home(user: user) : Registration(id: user.uid)));
     print("Success: ${user.uid}");
   } catch (e) {
     verificationError = true;
@@ -421,12 +430,13 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                             hasError = false;
                             scaffoldKey.currentState!.showSnackBar(SnackBar(
                               content: Text("Validated",
-                              textAlign: TextAlign.center),
+                                  textAlign: TextAlign.center),
                               backgroundColor: Colors.green,
                               duration: Duration(seconds: 2),
                               width: 280.0, // Width of the SnackBar.
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, // Inner padding for SnackBar content.
+                                horizontal:
+                                    10.0, // Inner padding for SnackBar content.
                               ),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(
