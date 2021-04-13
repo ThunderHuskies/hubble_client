@@ -47,6 +47,7 @@ dependencies:
   shared_preferences: ^2.0.5
   fluttertoast: ^8.0.3
   photo_view: ^0.11.1
+  flutter_form_builder: ^6.0.0-nullsafety.1
   
 dev_dependencies:
   flutter_test:
