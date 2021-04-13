@@ -304,7 +304,7 @@ class UserCardsState extends State<UserCards> {
                                                                           "🤠"),
                                                                       content:
                                                                           new Text(
-                                                                              "Added ${document.data()!['name']}"),
+                                                                              "Added ${document.data()!['name']}!! "),
                                                                       actions: <
                                                                           Widget>[
                                                                         new FlatButton(
