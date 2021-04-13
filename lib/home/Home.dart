@@ -234,11 +234,11 @@ class UserCardsState extends State<UserCards> {
                                                       () {
                                                         if (matchData[n]
                                                                 .rating! <
-                                                            2) {
+                                                            3) {
                                                           return "😃";
                                                         } else if (matchData[n]
                                                                 .rating! <
-                                                            4) {
+                                                            10) {
                                                           return "😆";
                                                         } else {
                                                           return "🤩";
@@ -293,6 +293,26 @@ class UserCardsState extends State<UserCards> {
                                                           icon: const Icon(Icons
                                                               .insert_link_rounded),
                                                           onPressed: () {
+                                                            showDialog(
+                                                                context:
+                                                                    context,
+                                                                builder:
+                                                                    (BuildContext
+                                                                        context) {
+                                                                  return CupertinoAlertDialog(
+                                                                      title: new Text(
+                                                                          "🤠"),
+                                                                      content:
+                                                                          new Text(
+                                                                              "Added ${document.data()!['name']}!! "),
+                                                                      actions: <
+                                                                          Widget>[
+                                                                        new FlatButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.of(context).pop(),
+                                                                            child: new Text("Sweet!", style: TextStyle(color: Colors.blue[800])))
+                                                                      ]);
+                                                                });
                                                             var friendId = [
                                                               document.id
                                                             ];
