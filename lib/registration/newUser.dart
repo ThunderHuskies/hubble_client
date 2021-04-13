@@ -1,88 +1,94 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import  'package:flutter_form_builder/flutter_form_builder.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Registration extends StatelessWidget {
+  final String? id;
+
+  Registration({Key? key, @required this.id});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RegisterName(),
-      );
+      body: RegisterName(id: id),
+    );
   }
 }
 
 //Register name
 class RegisterName extends StatefulWidget {
+  final String? id;
+
+  RegisterName({Key? key, @required this.id});
 
   @override
   State<StatefulWidget> createState() {
-    return RegisterNameState();
+    return RegisterNameState(id: id);
   }
 }
 
 class RegisterNameState extends State<RegisterName> {
+  final String? id;
+
+  RegisterNameState({Key? key, @required this.id});
 
   @override
   Widget build(BuildContext context) {
-    // final nameController = TextEditingController();
-    // var name;
-    // CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final nameController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    // Future<void> addUser() {
-    //   // Call the user's CollectionReference to add a new user
-    //   return users
-    //       .add({
-    //         'name': nameController.text
-    //       })
-    //       .then((value) => name - value.id)
-    //       .catchError((error) => print("Failed to add user: $error"));
-    // }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Image.asset("assets/images/editName.png", scale: 1),
-        bottomOpacity: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 100.0,
-        elevation: 0.0),
-      body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => ({
-            // addUser(),
-            Navigator.push(
+    void addUser(BuildContext context) {
+      // Call the user's CollectionReference to add a new user
+      users
+          .doc(id)
+          .set({'name': nameController.text})
+          .then(
+            (value) => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => RegisterSchool()),
+            ),
+          )
+          .catchError((error) => print("Failed to add user: $error"));
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Image.asset("assets/images/editName.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  addUser(context),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "What's your name?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  Container(
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: TextFormField(
+                        controller: nameController,
+                        decoration: InputDecoration(
+                            border: UnderlineInputBorder(), labelText: 'name')),
+                  ),
+                ],
               ),
-          }),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text("What's your name?",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                ),
-                // Container (
-                //   // alignment: Alignment.center,
-                //   width: 280,
-                //   child: TextFormField(
-                //     controller: nameController,
-                //     // onChanged: (value) => userName = value,
-                //     decoration: InputDecoration(
-                //       border: UnderlineInputBorder(),
-                //       labelText: 'name'
-                //     )
-                //   ),
-                // ),
-            ],
-        ),
-      )));
+            )));
   }
 }
 
@@ -115,47 +121,48 @@ class RegisterSchoolState extends State<RegisterSchool> {
     // }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset("assets/images/editSchool.png", scale: 1),
-        bottomOpacity: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 100.0,
-        elevation: 0.0),
-      body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => ({
-            // addSchool(),
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RegisterMajor()),
+        appBar: AppBar(
+            title: Image.asset("assets/images/editSchool.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  // addSchool(),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterMajor()),
+                  ),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "What school do you go to?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  // Container (
+                  //   // alignment: Alignment.center,
+                  //   width: 280,
+                  //   child: TextFormField(
+                  //     controller: schoolController,
+                  //     // onChanged: (value) => userName = value,
+                  //     decoration: InputDecoration(
+                  //       border: UnderlineInputBorder(),
+                  //       labelText: 'school'
+                  //     )
+                  //   ),
+                  // ),
+                ],
               ),
-          }),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text("What school do you go to?",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                ),
-                // Container (
-                //   // alignment: Alignment.center,
-                //   width: 280,
-                //   child: TextFormField(
-                //     controller: schoolController,
-                //     // onChanged: (value) => userName = value,
-                //     decoration: InputDecoration(
-                //       border: UnderlineInputBorder(),
-                //       labelText: 'school'
-                //     )
-                //   ),
-                // ),
-          ],
-        ),
-      )));
+            )));
   }
 }
 
@@ -188,47 +195,48 @@ class RegisterMajorState extends State<RegisterMajor> {
     // }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset("assets/images/editMajor.png", scale: 1),
-        bottomOpacity: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 100.0,
-        elevation: 0.0),
-      body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => ({
-            // addMajor(),
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RegisterClubs()),
+        appBar: AppBar(
+            title: Image.asset("assets/images/editMajor.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  // addMajor(),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterClubs()),
+                  ),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "What's your major?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  // Container (
+                  //   // alignment: Alignment.center,
+                  //   width: 280,
+                  //   child: TextFormField(
+                  //     controller: majorController,
+                  //     // onChanged: (value) => userName = value,
+                  //     decoration: InputDecoration(
+                  //       border: UnderlineInputBorder(),
+                  //       labelText: 'major'
+                  //     )
+                  //   ),
+                  // ),
+                ],
               ),
-          }),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text("What's your major?",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                ),
-                // Container (
-                //   // alignment: Alignment.center,
-                //   width: 280,
-                //   child: TextFormField(
-                //     controller: majorController,
-                //     // onChanged: (value) => userName = value,
-                //     decoration: InputDecoration(
-                //       border: UnderlineInputBorder(),
-                //       labelText: 'major'
-                //     )
-                //   ),
-                // ),
-          ],
-        ),
-      )));
+            )));
   }
 }
 
@@ -261,47 +269,48 @@ class RegisterClubsState extends State<RegisterClubs> {
     // }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Image.asset("assets/images/editMajor.png", scale: 1),
-        bottomOpacity: 0,
-        backgroundColor: Colors.white,
-        toolbarHeight: 100.0,
-        elevation: 0.0),
-      body: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => ({
-            // addClubs(),
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => RegisterName()),
+        appBar: AppBar(
+            title: Image.asset("assets/images/editMajor.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  // addClubs(),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterName()),
+                  ),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "What clubs are you in?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  // Container (
+                  //   // alignment: Alignment.center,
+                  //   width: 280,
+                  //   child: TextFormField(
+                  //     controller: clubsController,
+                  //     // onChanged: (value) => userName = value,
+                  //     decoration: InputDecoration(
+                  //       border: UnderlineInputBorder(),
+                  //       labelText: 'list your clubs here'
+                  //     )
+                  //   ),
+                  // ),
+                ],
               ),
-          }),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text("What clubs are you in?",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 30),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                ),
-                // Container (
-                //   // alignment: Alignment.center,
-                //   width: 280,
-                //   child: TextFormField(
-                //     controller: clubsController,
-                //     // onChanged: (value) => userName = value,
-                //     decoration: InputDecoration(
-                //       border: UnderlineInputBorder(),
-                //       labelText: 'list your clubs here'
-                //     )
-                //   ),
-                // ),
-          ],
-        ),
-      )));
+            )));
   }
 }
 
@@ -331,26 +340,26 @@ class MyCustomFormState extends State<MyCustomForm> {
         children: <Widget>[
           // Add TextFormFields and ElevatedButton here.
           TextFormField(
-          // The validator receives the text that the user has entered.
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter some text';
-            }
-            return null;
-          },
-        ),
-        ElevatedButton(
-          onPressed: () {
-            // Validate returns true if the form is valid, or false otherwise.
-            if (_formKey.currentState!.validate()) {
-              // If the form is valid, display a snackbar. In the real world,
-              // you'd often call a server or save the information in a database.
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(SnackBar(content: Text('Processing Data')));
-            }
-          },
-          child: Text('Submit'),
-        ),
+            // The validator receives the text that the user has entered.
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter some text';
+              }
+              return null;
+            },
+          ),
+          ElevatedButton(
+            onPressed: () {
+              // Validate returns true if the form is valid, or false otherwise.
+              if (_formKey.currentState!.validate()) {
+                // If the form is valid, display a snackbar. In the real world,
+                // you'd often call a server or save the information in a database.
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text('Processing Data')));
+              }
+            },
+            child: Text('Submit'),
+          ),
         ],
       ),
     );
