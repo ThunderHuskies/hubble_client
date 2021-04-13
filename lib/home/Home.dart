@@ -17,7 +17,8 @@ import '../home/Profile.dart';
 Future<List<MatchRating>> findMatches(String uid) async {
   List<MatchRating> matchList = [];
   final response = await http.post(
-    Uri.parse('https://us-central1-c-students-b7a3d.cloudfunctions.net/findMatches'),
+    Uri.parse(
+        'https://us-central1-c-students-b7a3d.cloudfunctions.net/findMatches'),
     headers: {"Content-Type": "application/json"},
     body: jsonEncode(
       <String, String>{'uid': uid},
@@ -143,7 +144,8 @@ class UserCardsState extends State<UserCards> {
       body: FutureBuilder<List<MatchRating>>(
         future: findMatches(widget.user!.uid),
         builder: (context, snapshot) {
-          final double navigationBarHeight = MediaQuery.of(context).padding.bottom;
+          final double navigationBarHeight =
+              MediaQuery.of(context).padding.bottom;
           final double height = MediaQuery.of(context).size.height;
           if (snapshot.hasError) {
             return Text("${snapshot.error}");
@@ -159,26 +161,32 @@ class UserCardsState extends State<UserCards> {
                     whereNotIn: userUID,
                   )
                   .snapshots(),
-              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) return new Center(child: Text('${snapshot.error}'));
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError)
+                  return new Center(child: Text('${snapshot.error}'));
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
                     return new Center(child: new CircularProgressIndicator());
                   default:
-                    if (!snapshot.hasData) return new Center(child: Text('No one...yet...'));
+                    if (!snapshot.hasData)
+                      return new Center(child: Text('No one...yet...'));
                     int n = -1;
-                    List<Widget> widgetList = snapshot.data!.docs.map((DocumentSnapshot document) {
+                    List<Widget> widgetList =
+                        snapshot.data!.docs.map((DocumentSnapshot document) {
                       n++;
                       return Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25)),
                         child: InkWell(
                           splashColor: Colors.blue.withAlpha(30),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context2) => Profile(document: document),
+                                builder: (context2) =>
+                                    Profile(document: document),
                               ),
                             );
                           },
@@ -187,7 +195,8 @@ class UserCardsState extends State<UserCards> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(25),
                                 image: DecorationImage(
-                                  image: CachedNetworkImageProvider(document.data()!['image']),
+                                  image: CachedNetworkImageProvider(
+                                      document.data()!['image']),
                                   fit: BoxFit.cover,
                                 ),
                               ),
@@ -206,121 +215,180 @@ class UserCardsState extends State<UserCards> {
                                   ],
                                 ),
                               ),
-                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                                Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
                                   children: [
-                                    Row(
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          child: Text(
-                                            document.data()!['name'],
-                                            style: TextStyle(
-                                              fontFamily: 'Open Sans',
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 25.0,
+                                        Row(
+                                          children: [
+                                            Container(
+                                              child: Text(
+                                                document.data()!['name'],
+                                                style: TextStyle(
+                                                  fontFamily: 'Open Sans',
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 25.0,
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Padding(
+                                                padding: EdgeInsets.all(2.5)),
+                                            Text(
+                                              () {
+                                                if (matchData[n].rating! < 3) {
+                                                  return "😃";
+                                                } else if (matchData[n]
+                                                        .rating! <
+                                                    10) {
+                                                  return "😆";
+                                                } else {
+                                                  return "🤩";
+                                                }
+                                              }(),
+                                              style: TextStyle(fontSize: 25.0),
+                                            )
+                                          ],
                                         ),
                                         Padding(padding: EdgeInsets.all(2.5)),
                                         Text(
-                                          () {
-                                            if (matchData[n].rating! < 3) {
-                                              return "😃";
-                                            } else if (matchData[n].rating! < 10) {
-                                              return "😆";
-                                            } else {
-                                              return "🤩";
-                                            }
-                                          }(),
-                                          style: TextStyle(fontSize: 25.0),
-                                        )
+                                          document.data()!['major'],
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Padding(padding: EdgeInsets.all(1.0)),
+                                        Text(
+                                          document.data()!['yearLevel'],
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                        Padding(padding: EdgeInsets.all(20.0))
                                       ],
                                     ),
-                                    Padding(padding: EdgeInsets.all(2.5)),
-                                    Text(
-                                      document.data()!['major'],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Padding(padding: EdgeInsets.all(1.0)),
-                                    Text(
-                                      document.data()!['yearLevel'],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    Padding(padding: EdgeInsets.all(20.0))
-                                  ],
-                                ),
-                                Padding(padding: EdgeInsets.only(right: 8.0)),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      decoration: ShapeDecoration(
-                                        color: Colors.white,
-                                        shape: CircleBorder(),
-                                      ),
-                                      child: Transform.rotate(
-                                        angle: -(math.pi / 5.0),
-                                        child: IconButton(
-                                          iconSize: 30.0,
-                                          icon: const Icon(Icons.insert_link_rounded),
-                                          onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return CupertinoAlertDialog(
-                                                  title: new Text("🤠"),
-                                                  content: new Text("Add ${document.data()!['name']} as a connection?"),
-                                                  actions: <Widget>[
-                                                    new FlatButton(
-                                                      onPressed: () => setState(
-                                                        () => {
-                                                          Navigator.of(context).pop(true),
-                                                          FirebaseFirestore.instance
-                                                              .collection("users")
-                                                              .doc(widget.user!.uid)
-                                                              .update({
-                                                                'connections': FieldValue.arrayUnion([document.id])
-                                                              })
-                                                              .then((value) => print("User Updated"))
-                                                              .catchError((error) => print("Failed to update user: $error")),
-                                                          FirebaseFirestore.instance
-                                                              .collection("users")
-                                                              .doc(document.id)
-                                                              .update({
-                                                                'connections': FieldValue.arrayUnion([widget.user!.uid])
-                                                              })
-                                                              .then((value) => print('Friend Updated'))
-                                                              .catchError((error) => print("Failed to update friend: $error")),
-                                                          ScaffoldMessenger.of(context).showSnackBar(
-                                                              SnackBar(content: Text('${document.data()!['name']} added as a connection'))),
-                                                        },
-                                                      ),
-                                                      child: new Text("Yes", style: TextStyle(color: Colors.blue[800])),
-                                                    ),
-                                                    new FlatButton(
-                                                      onPressed: () => Navigator.of(context).pop(false),
-                                                      child: new Text("No", style: TextStyle(color: Colors.blue[800])),
-                                                    )
-                                                  ],
+                                    Padding(
+                                        padding: EdgeInsets.only(right: 8.0)),
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Container(
+                                          decoration: ShapeDecoration(
+                                            color: Colors.white,
+                                            shape: CircleBorder(),
+                                          ),
+                                          child: Transform.rotate(
+                                            angle: -(math.pi / 5.0),
+                                            child: IconButton(
+                                              iconSize: 30.0,
+                                              icon: const Icon(
+                                                  Icons.insert_link_rounded),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return CupertinoAlertDialog(
+                                                      title: new Text("🤠"),
+                                                      content: new Text(
+                                                          "Add ${document.data()!['name']} as a connection?"),
+                                                      actions: <Widget>[
+                                                        new FlatButton(
+                                                          onPressed: () =>
+                                                              setState(
+                                                            () => {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(true),
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "users")
+                                                                  .doc(widget
+                                                                      .user!
+                                                                      .uid)
+                                                                  .update({
+                                                                    'connections':
+                                                                        FieldValue
+                                                                            .arrayUnion([
+                                                                      document
+                                                                          .id
+                                                                    ])
+                                                                  })
+                                                                  .then((value) =>
+                                                                      print(
+                                                                          "User Updated"))
+                                                                  .catchError(
+                                                                      (error) =>
+                                                                          print(
+                                                                              "Failed to update user: $error")),
+                                                              FirebaseFirestore
+                                                                  .instance
+                                                                  .collection(
+                                                                      "users")
+                                                                  .doc(document
+                                                                      .id)
+                                                                  .update({
+                                                                    'connections':
+                                                                        FieldValue
+                                                                            .arrayUnion([
+                                                                      widget
+                                                                          .user!
+                                                                          .uid
+                                                                    ])
+                                                                  })
+                                                                  .then((value) =>
+                                                                      print(
+                                                                          'Friend Updated'))
+                                                                  .catchError(
+                                                                      (error) =>
+                                                                          print(
+                                                                              "Failed to update friend: $error")),
+                                                              ScaffoldMessenger
+                                                                      .of(
+                                                                          context)
+                                                                  .showSnackBar(
+                                                                      SnackBar(
+                                                                          content:
+                                                                              Text('${document.data()!['name']} added as a connection'))),
+                                                            },
+                                                          ),
+                                                          child: new Text("Yes",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                          .blue[
+                                                                      800])),
+                                                        ),
+                                                        new FlatButton(
+                                                          onPressed: () =>
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop(false),
+                                                          child: new Text("No",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                          .blue[
+                                                                      800])),
+                                                        )
+                                                      ],
+                                                    );
+                                                  },
                                                 );
                                               },
-                                            );
-                                          },
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                    Padding(padding: EdgeInsets.all(10.0))
-                                  ],
-                                )
-                              ]),
+                                        Padding(padding: EdgeInsets.all(10.0))
+                                      ],
+                                    )
+                                  ]),
                             ),
                           ]),
                         ),
@@ -333,7 +401,10 @@ class UserCardsState extends State<UserCards> {
                             options: CarouselOptions(
                               enlargeCenterPage: true,
                               viewportFraction: 1,
-                              height: height - kBottomNavigationBarHeight - MediaQuery.of(context).padding.top,
+                              height: height -
+                                  kBottomNavigationBarHeight -
+                                  MediaQuery.of(context).padding.top -
+                                  MediaQuery.of(context).padding.bottom,
                             ),
                             items: widgetList,
                           ),
@@ -366,7 +437,11 @@ class _ConnectionsState extends State<Connections> {
   Widget build(BuildContext context) {
     Future<List> getConnectionsList() async {
       var connectionList = [];
-      await FirebaseFirestore.instance.collection("users").doc(widget.user!.uid).get().then((DocumentSnapshot document) {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.user!.uid)
+          .get()
+          .then((DocumentSnapshot document) {
         connectionList = document.data()!['connections'];
       });
       return connectionList;
@@ -387,9 +462,14 @@ class _ConnectionsState extends State<Connections> {
           builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
             if (snapshot.hasData) {
               return StreamBuilder<QuerySnapshot>(
-                stream: FirebaseFirestore.instance.collection("users").where(FieldPath.documentId, whereIn: snapshot.data).snapshots(),
-                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  if (snapshot.hasError) return new Center(child: Text('${snapshot.error}'));
+                stream: FirebaseFirestore.instance
+                    .collection("users")
+                    .where(FieldPath.documentId, whereIn: snapshot.data)
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError)
+                    return new Center(child: Text('${snapshot.error}'));
                   switch (snapshot.connectionState) {
                     case ConnectionState.none:
                     case ConnectionState.waiting:
@@ -399,7 +479,8 @@ class _ConnectionsState extends State<Connections> {
                         return new Center(child: Text('No matches!'));
                       }
                       return ListView(
-                        children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                        children: snapshot.data!.docs
+                            .map((DocumentSnapshot document) {
                           return Card(
                             child: InkWell(
                               splashColor: Colors.blue.withAlpha(30),
@@ -422,13 +503,15 @@ class _ConnectionsState extends State<Connections> {
                                       color: Colors.white,
                                     )),
                                 key: Key(widget.user!.uid),
-                                confirmDismiss: (DismissDirection direction) async {
+                                confirmDismiss:
+                                    (DismissDirection direction) async {
                                   await showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return CupertinoAlertDialog(
                                         title: new Text("‼️"),
-                                        content: new Text("Are you sure you want to remove ${document.data()!['name']} as a connection?"),
+                                        content: new Text(
+                                            "Are you sure you want to remove ${document.data()!['name']} as a connection?"),
                                         actions: <Widget>[
                                           new FlatButton(
                                             onPressed: () => setState(
@@ -439,28 +522,45 @@ class _ConnectionsState extends State<Connections> {
                                                     .collection('users')
                                                     .doc(widget.user!.uid)
                                                     .update({
-                                                      'connections': FieldValue.arrayRemove([document.id])
+                                                      'connections': FieldValue
+                                                          .arrayRemove(
+                                                              [document.id])
                                                     })
-                                                    .then((value) => print('Deleted ${document.id} from connections'))
-                                                    .catchError((error) => print('Error with deleting user: ${document.id} => $error')),
+                                                    .then((value) => print(
+                                                        'Deleted ${document.id} from connections'))
+                                                    .catchError((error) => print(
+                                                        'Error with deleting user: ${document.id} => $error')),
                                                 //removes you from the user's connections list
                                                 FirebaseFirestore.instance
                                                     .collection('users')
                                                     .doc(document.id)
                                                     .update({
-                                                      'connections': FieldValue.arrayRemove([widget.user!.uid])
+                                                      'connections': FieldValue
+                                                          .arrayRemove([
+                                                        widget.user!.uid
+                                                      ])
                                                     })
-                                                    .then((value) => print('Deleted you from ${document.id} connections'))
-                                                    .catchError((error) => print('Error with deleting user: ${widget.user!.uid} => $error')),
+                                                    .then((value) => print(
+                                                        'Deleted you from ${document.id} connections'))
+                                                    .catchError((error) => print(
+                                                        'Error with deleting user: ${widget.user!.uid} => $error')),
                                                 ScaffoldMessenger.of(context)
-                                                    .showSnackBar(SnackBar(content: Text('${document.data()!['name']} removed as connection'))),
+                                                    .showSnackBar(SnackBar(
+                                                        content: Text(
+                                                            '${document.data()!['name']} removed as connection'))),
                                               },
                                             ),
-                                            child: Text("Remove", style: TextStyle(color: Colors.blue[800])),
+                                            child: Text("Remove",
+                                                style: TextStyle(
+                                                    color: Colors.blue[800])),
                                           ),
                                           new FlatButton(
-                                            onPressed: () => Navigator.of(context).pop(false),
-                                            child: Text("Cancel", style: TextStyle(color: Colors.blue[800])),
+                                            onPressed: () =>
+                                                Navigator.of(context)
+                                                    .pop(false),
+                                            child: Text("Cancel",
+                                                style: TextStyle(
+                                                    color: Colors.blue[800])),
                                           ),
                                         ],
                                       );
@@ -471,7 +571,9 @@ class _ConnectionsState extends State<Connections> {
                                   children: <Widget>[
                                     ListTile(
                                       leading: CircleAvatar(
-                                        backgroundImage: CachedNetworkImageProvider(document.data()!['image']),
+                                        backgroundImage:
+                                            CachedNetworkImageProvider(
+                                                document.data()!['image']),
                                       ),
                                       title: Text(document.data()!['name']),
                                       subtitle: Text(document.data()!['major']),
@@ -513,9 +615,14 @@ class AccountPage extends StatelessWidget {
           ];
         },
         body: StreamBuilder<DocumentSnapshot>(
-          stream: FirebaseFirestore.instance.collection("users").doc(user!.uid).snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-            if (snapshot.hasError) return new Center(child: Text('${snapshot.error}'));
+          stream: FirebaseFirestore.instance
+              .collection("users")
+              .doc(user!.uid)
+              .snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError)
+              return new Center(child: Text('${snapshot.error}'));
             switch (snapshot.connectionState) {
               case ConnectionState.none:
               case ConnectionState.waiting:
@@ -531,7 +638,8 @@ class AccountPage extends StatelessWidget {
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => Profile(document: snapshot.data),
+                          builder: (context) =>
+                              Profile(document: snapshot.data),
                         ),
                       ),
                       child: Column(
@@ -540,7 +648,8 @@ class AccountPage extends StatelessWidget {
                           Padding(padding: EdgeInsets.all(15.0)),
                           CircleAvatar(
                             radius: 75,
-                            backgroundImage: CachedNetworkImageProvider(snapshot.data!['image']),
+                            backgroundImage: CachedNetworkImageProvider(
+                                snapshot.data!['image']),
                           ),
                           Padding(padding: EdgeInsets.all(10.0)),
                           Text(
@@ -548,7 +657,8 @@ class AccountPage extends StatelessWidget {
                             style: TextStyle(fontSize: 30),
                           ),
                           Padding(padding: EdgeInsets.all(5.0)),
-                          Text(snapshot.data!['major'], style: TextStyle(fontSize: 15)),
+                          Text(snapshot.data!['major'],
+                              style: TextStyle(fontSize: 15)),
                           Padding(padding: EdgeInsets.all(2.0)),
                           Text(snapshot.data!['yearLevel']),
                           Padding(padding: EdgeInsets.all(2.0)),
@@ -565,7 +675,8 @@ class AccountPage extends StatelessWidget {
                             onTap: () => Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => EditProfile(snapshot: snapshot.data!),
+                                builder: (context) =>
+                                    EditProfile(snapshot: snapshot.data!),
                               ),
                             ),
                             child: ListTile(
