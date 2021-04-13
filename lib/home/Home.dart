@@ -304,7 +304,7 @@ class UserCardsState extends State<UserCards> {
                                                                           "🤠"),
                                                                       content:
                                                                           new Text(
-                                                                              "Added ${document.data()!['name']} as connection!"),
+                                                                              "Added ${document.data()!['name']}"),
                                                                       actions: <
                                                                           Widget>[
                                                                         new FlatButton(
@@ -350,20 +350,9 @@ class UserCardsState extends State<UserCards> {
                                                                           .arrayUnion(
                                                                               userId)
                                                                 })
-                                                                .then(
-                                                                    (value) =>
-                                                                        CupertinoAlertDialog(
-                                                                            title: new Text(
-                                                                                "nice!"),
-                                                                            content: new Text(
-                                                                                "Succesfully added ${document.data()!['name']}"),
-                                                                            actions: <
-                                                                                Widget>[
-                                                                              new FlatButton(onPressed: () => Navigator.of(context).pop(), child: new Text("ok"))
-                                                                            ])
-                                                                    // print(
-                                                                    //     'Friend Updated')
-                                                                    )
+                                                                .then((value) =>
+                                                                    print(
+                                                                        'Friend Updated'))
                                                                 .catchError(
                                                                     (error) =>
                                                                         print(
