@@ -74,6 +74,7 @@ class _EditProfileScreenState extends State<EditProfile> {
   // }
 
   void updateProfile() {
+    print(year);
     if (year != '' &&
         major != '' &&
         clubs != '' &&
@@ -97,29 +98,6 @@ class _EditProfileScreenState extends State<EditProfile> {
         appBar: CupertinoNavigationBar(
           middle: Text("Edit Profile"),
           previousPageTitle: "Account Profile",
-          // leading: GestureDetector(
-          //   onTap: () => showCupertinoModalPopup(
-          //       context: context,
-          //       builder: (BuildContext context) => CupertinoActionSheet(
-          //             actions: [
-          //               CupertinoActionSheetAction(
-          //                   child: const Text("Save Profile"),
-          //                   onPressed: () => Navigator.of(context).pop()),
-          //               CupertinoActionSheetAction(
-          //                   child: const Text("Don't Save"),
-          //                   onPressed: () => Navigator.pop(context)),
-          //             ],
-          //             cancelButton: CupertinoActionSheetAction(
-          //               child: Text('Cancel'),
-          //               onPressed: () => Navigator.pop(context),
-          //             ),
-          //           )),
-          //   child: Row(
-          //     children: <Widget>[
-          //       Icon(CupertinoIcons.left_chevron),
-          //     ],
-          //   ),
-          // ),
           trailing: TextButton(
             child: Text("DONE",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),

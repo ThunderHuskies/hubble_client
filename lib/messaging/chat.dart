@@ -332,7 +332,6 @@ class ChatScreenState extends State<ChatScreen> {
                             ),
                             imageUrl: document.data()!['content'],
                             width: 200.0,
-                            height: 200.0,
                             fit: BoxFit.cover,
                           ),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
@@ -414,7 +413,6 @@ class ChatScreenState extends State<ChatScreen> {
                                   placeholder: (context, url) => Container(
                                     child: CircularProgressIndicator(),
                                     width: 200.0,
-                                    height: 200.0,
                                     padding: EdgeInsets.all(70.0),
                                     decoration: BoxDecoration(
                                       color: Colors.blue,
@@ -437,8 +435,7 @@ class ChatScreenState extends State<ChatScreen> {
                                     clipBehavior: Clip.hardEdge,
                                   ),
                                   imageUrl: document.data()!['content'],
-                                  width: 200.0,
-                                  height: 200.0,
+                                  width: 200,
                                   fit: BoxFit.cover,
                                 ),
                                 borderRadius:
@@ -446,12 +443,11 @@ class ChatScreenState extends State<ChatScreen> {
                                 clipBehavior: Clip.hardEdge,
                               ),
                               onPressed: () {
-                                print('cheese2');
-                                // Navigator.push(
-                                //     context,
-                                //     MaterialPageRoute(
-                                //         builder: (context) => FullPhoto(
-                                //             url: document.data()!['content'])));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FullPhoto(
+                                            url: document.data()!['content'])));
                               },
                               padding: EdgeInsets.all(0),
                             ),
@@ -461,7 +457,6 @@ class ChatScreenState extends State<ChatScreen> {
                             child: Image.asset(
                               'images/${document.data()!['content']}.gif',
                               width: 100.0,
-                              height: 100.0,
                               fit: BoxFit.cover,
                             ),
                             margin: EdgeInsets.only(
@@ -518,6 +513,9 @@ class ChatScreenState extends State<ChatScreen> {
     return Container(
       child: Row(
         children: <Widget>[
+          Padding(
+            padding: EdgeInsets.all(5),
+          ),
           // Button send image
           Material(
             child: Container(
@@ -529,17 +527,9 @@ class ChatScreenState extends State<ChatScreen> {
             ),
             color: Colors.white,
           ),
-          Material(
-            child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 1.0),
-              child: IconButton(
-                icon: Icon(Icons.face),
-                onPressed: getSticker,
-              ),
-            ),
-            color: Colors.white,
+          Padding(
+            padding: EdgeInsets.all(2),
           ),
-
           // Edit text
           Flexible(
             child: Container(
