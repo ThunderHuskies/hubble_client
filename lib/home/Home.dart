@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hubble_client/RegisterPage.dart';
 import 'package:hubble_client/messaging/chat.dart';
 import 'dart:math' as math;
 import 'dart:async';
@@ -116,7 +117,7 @@ class UserCard extends StatelessWidget {
               backgroundColor: Colors.white,
               toolbarHeight: 75.0,
               elevation: 0.0),
-          body: UserCards(user: user),
+          body: user != null ? UserCards(user: user) : RegisterPage(),
         ));
   }
 }

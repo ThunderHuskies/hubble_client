@@ -60,12 +60,14 @@ class MyApp extends StatelessWidget {
       future: Authentication.initializeFirebase(context: context),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
+            print('returning to register page');
             return MaterialApp(
               title: 'hubble',
               home: RegisterPage(),
             );
           } else if (snapshot.connectionState == ConnectionState.done) {
               User? user = FirebaseAuth.instance.currentUser;
+              print('returning to home page');
               return MaterialApp(
                 title: 'hubble-home',
                 home: Home(user: user),

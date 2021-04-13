@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hubble_client/registration/newUser.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../home/Home.dart';
@@ -17,12 +19,28 @@ bool isPhoneVerified = true;
 bool verificationError = false;
 
 void signIn(BuildContext context) async {
+  Future<bool> checkExist(User user) async {
+    bool exists = false;
+    try {
+      await FirebaseFirestore.instance.collection("users").doc(user.uid).get().then((doc) {
+        if (doc.exists)
+          exists = true;
+        else
+          exists = false;
+      });
+      return exists;
+    } catch (e) {
+      return false;
+    }
+  }
   try {
     AuthCredential credential = PhoneAuthProvider.credential(
       verificationId: _verificationId!, smsCode: currentText);
-    User user = (await auth.signInWithCredential(credential)).user!;
+    User user = (await auth.signInWithCredential(credential)).user!; 
+    bool userExists = await checkExist(user);
+    print(userExists);
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Home(user: user)));
+        context, MaterialPageRoute(builder: (context) => userExists ? Home(user: user) : Registration()));
     print("Success: ${user.uid}");
   } catch (e) {
     verificationError = true;
