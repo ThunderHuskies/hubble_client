@@ -67,6 +67,7 @@ class ImageSliderState extends State<ImageSlider> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(children: [
         CarouselSlider(
             options: CarouselOptions(
