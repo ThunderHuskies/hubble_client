@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// import  'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:hubble_client/home/Home.dart';
+// import 'package:dropdownfield/dropdownfield.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Registration extends StatelessWidget {
@@ -44,11 +45,29 @@ class RegisterNameState extends State<RegisterName> {
       // Call the user's CollectionReference to add a new user
       users
           .doc(id)
-          .set({'name': nameController.text})
+          .set({
+            'name': nameController.text,
+            'chattingWith:': '',
+            'clubs': '',
+            'connections': [],
+            'courses': [],
+            'email': '',
+            'hobbies': '',
+            'hometown': '',
+            'image': '',
+            'instagramHandle': null,
+            'linkedinURL': null,
+            'lookingFor': '',
+            'major': '',
+            'age': 0,
+            'phone': '',
+            'school': '',
+            'yearLevel': ''
+            })
           .then(
             (value) => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RegisterSchool()),
+              MaterialPageRoute(builder: (context) => RegisterSchool(id: id)),
             ),
           )
           .catchError((error) => print("Failed to add user: $error"));
@@ -84,7 +103,84 @@ class RegisterNameState extends State<RegisterName> {
                     child: TextFormField(
                         controller: nameController,
                         decoration: InputDecoration(
-                            border: UnderlineInputBorder(), labelText: 'name')),
+                            border: UnderlineInputBorder(), 
+                            labelText: 'Enter your name',
+                      )),
+                  ),
+                ],
+              ),
+            )));
+  }
+}
+
+//Register age
+class RegisterAge extends StatefulWidget {
+  final String? id;
+  RegisterAge({Key? key, @required this.id});
+
+  @override
+  State<StatefulWidget> createState() {
+    return RegisterAgeState(id: id);
+  }
+}
+
+class RegisterAgeState extends State<RegisterAge> {
+  final String? id;
+  RegisterAgeState({Key? key, @required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    final ageController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    void addAge(BuildContext context) {
+      users
+      .doc(id)
+      .update({
+            'age': int.parse(ageController.text)
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterSchool(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update age: $error"));
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Image.asset("assets/images/editName.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  addAge(context),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "How old are you?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: TextFormField(
+                      controller: ageController,
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Enter your age'
+                      )
+                    ),
                   ),
                 ],
               ),
@@ -94,31 +190,37 @@ class RegisterNameState extends State<RegisterName> {
 
 //Register school
 class RegisterSchool extends StatefulWidget {
-  // final String documentId;
-  // RegisterSchool(this.documentId);
+  final String? id;
+  RegisterSchool({Key? key, @required this.id});
 
   @override
   State<StatefulWidget> createState() {
-    return RegisterSchoolState();
+    return RegisterSchoolState(id: id);
   }
 }
 
 class RegisterSchoolState extends State<RegisterSchool> {
+  final String? id;
+  RegisterSchoolState({Key? key, @required this.id});
+
   @override
   Widget build(BuildContext context) {
-    // String? documentId;
-    // final schoolController = TextEditingController();
-    // CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final schoolController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    // Future<void> addSchool() {
-    //   return users
-    //   .doc(documentId)
-    //   .update({
-    //         'name': schoolController.text
-    //       })
-    //   .then((value) => print("School Updated"))
-    //   .catchError((error) => print("Failed to update school: $error"));
-    // }
+    void addSchool(BuildContext context) {
+      users
+      .doc(id)
+      .update({
+            'school': schoolController.text
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterMajor(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update school: $error"));
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -130,11 +232,7 @@ class RegisterSchoolState extends State<RegisterSchool> {
         body: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ({
-                  // addSchool(),
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterMajor()),
-                  ),
+                  addSchool(context),
                 }),
             child: Center(
               child: Column(
@@ -148,18 +246,17 @@ class RegisterSchoolState extends State<RegisterSchool> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                   ),
-                  // Container (
-                  //   // alignment: Alignment.center,
-                  //   width: 280,
-                  //   child: TextFormField(
-                  //     controller: schoolController,
-                  //     // onChanged: (value) => userName = value,
-                  //     decoration: InputDecoration(
-                  //       border: UnderlineInputBorder(),
-                  //       labelText: 'school'
-                  //     )
-                  //   ),
-                  // ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: TextFormField(
+                      controller: schoolController,
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Enter your school'
+                      )
+                    ),
+                  ),
                 ],
               ),
             )));
@@ -168,31 +265,37 @@ class RegisterSchoolState extends State<RegisterSchool> {
 
 //Register Major
 class RegisterMajor extends StatefulWidget {
-  // final String documentId;
-  // RegisterMajor(this.documentId);
+  final String? id;
+  RegisterMajor({Key? key, @required this.id});
 
   @override
   State<StatefulWidget> createState() {
-    return RegisterMajorState();
+    return RegisterMajorState(id: id);
   }
 }
 
 class RegisterMajorState extends State<RegisterMajor> {
+  final String? id;
+  RegisterMajorState({Key? key, @required this.id});
+
   @override
   Widget build(BuildContext context) {
-    // String? documentId;
-    // final majorController = TextEditingController();
-    // CollectionReference users = FirebaseFirestore.instance.collection('users');
+    final majorController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    // Future<void> addMajor() {
-    //   return users
-    //   .doc(documentId)
-    //   .update({
-    //         'major': majorController.text
-    //       })
-    //   .then((value) => print("Major Updated"))
-    //   .catchError((error) => print("Failed to update school: $error"));
-    // }
+    void addMajor(BuildContext context) {
+     users
+      .doc(id)
+      .update({
+            'major': majorController.text
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterYear(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update major: $error"));
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -204,11 +307,7 @@ class RegisterMajorState extends State<RegisterMajor> {
         body: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ({
-                  // addMajor(),
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterClubs()),
-                  ),
+                  addMajor(context),
                 }),
             child: Center(
               child: Column(
@@ -222,51 +321,56 @@ class RegisterMajorState extends State<RegisterMajor> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                   ),
-                  // Container (
-                  //   // alignment: Alignment.center,
-                  //   width: 280,
-                  //   child: TextFormField(
-                  //     controller: majorController,
-                  //     // onChanged: (value) => userName = value,
-                  //     decoration: InputDecoration(
-                  //       border: UnderlineInputBorder(),
-                  //       labelText: 'major'
-                  //     )
-                  //   ),
-                  // ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: TextFormField(
+                      controller: majorController,
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Enter your major'
+                      )
+                    ),
+                  ),
                 ],
               ),
             )));
   }
 }
 
-//Register Clubs
-class RegisterClubs extends StatefulWidget {
-  // final String documentId;
-  // RegisterClubs(this.documentId);
+//Register year level
+class RegisterYear extends StatefulWidget {
+  final String? id;
+  RegisterYear({Key? key, @required this.id});
 
   @override
   State<StatefulWidget> createState() {
-    return RegisterClubsState();
+    return RegisterYearState(id: id);
   }
 }
 
-class RegisterClubsState extends State<RegisterClubs> {
+class RegisterYearState extends State<RegisterYear> {
+  final String? id;
+  RegisterYearState({Key? key, @required this.id});
+
   @override
   Widget build(BuildContext context) {
-    // String? documentId;
-    final clubsController = TextEditingController();
+    final yearController = TextEditingController();
     CollectionReference users = FirebaseFirestore.instance.collection('users');
 
-    // Future<void> addClubs() {
-    //   return users
-    //   .doc(documentId)
-    //   .update({
-    //         'clubs': clubsController.text
-    //       })
-    //   .then((value) => print("School Updated"))
-    //   .catchError((error) => print("Failed to update school: $error"));
-    // }
+    void addYear(BuildContext context) {
+     users
+      .doc(id)
+      .update({
+            'yearLevel': yearController.text
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterClubs(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update year: $error"));
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -278,11 +382,82 @@ class RegisterClubsState extends State<RegisterClubs> {
         body: GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: () => ({
-                  // addClubs(),
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => RegisterName()),
+                  addYear(context),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "What's your year level?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: TextFormField(
+                      controller: yearController,
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: 'Enter your year level'
+                      )
+                    ),
+                  ),
+                ],
+              ),
+            )));
+  }
+}
+
+//Register Clubs
+class RegisterClubs extends StatefulWidget {
+  final String? id;
+  RegisterClubs({Key? key, @required this.id});
+
+  @override
+  State<StatefulWidget> createState() {
+    return RegisterClubsState(id: id);
+  }
+}
+
+class RegisterClubsState extends State<RegisterClubs> {
+  final String? id;
+  RegisterClubsState({Key? key, @required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    final clubsController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    void addClubs(BuildContext context) {
+     users
+      .doc(id)
+      .update({
+            'clubs': clubsController.text
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterLinks(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update clubs: $error"));
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Image.asset("assets/images/editMajor.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  addClubs(context),
                 }),
             child: Center(
               child: Column(
@@ -296,72 +471,278 @@ class RegisterClubsState extends State<RegisterClubs> {
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                   ),
-                  // Container (
-                  //   // alignment: Alignment.center,
-                  //   width: 280,
-                  //   child: TextFormField(
-                  //     controller: clubsController,
-                  //     // onChanged: (value) => userName = value,
-                  //     decoration: InputDecoration(
-                  //       border: UnderlineInputBorder(),
-                  //       labelText: 'list your clubs here'
-                  //     )
-                  //   ),
-                  // ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: TextFormField(
+                      controller: clubsController,
+                      decoration: InputDecoration(
+                        border: UnderlineInputBorder(),
+                        labelText: "Enter some clubs you're involved in"
+                      )
+                    ),
+                  ),
                 ],
               ),
             )));
   }
 }
 
-class MyCustomForm extends StatefulWidget {
+//Register Hobbies
+class RegisterHobbies extends StatefulWidget {
+  final String? id;
+  RegisterHobbies({Key? key, @required this.id});
+
   @override
-  MyCustomFormState createState() {
-    return MyCustomFormState();
+  State<StatefulWidget> createState() {
+    return RegisterLinksState(id: id);
   }
 }
 
-// Define a corresponding State class.
-// This class holds data related to the form.
-class MyCustomFormState extends State<MyCustomForm> {
-  // Create a global key that uniquely identifies the Form widget
-  // and allows validation of the form.
-  //
-  // Note: This is a `GlobalKey<FormState>`,
-  // not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
+class RegisterHobbiesState extends State<RegisterHobbies> {
+  final String? id;
+  RegisterHobbiesState({Key? key, @required this.id});
 
   @override
   Widget build(BuildContext context) {
-    // Build a Form widget using the _formKey created above.
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: <Widget>[
-          // Add TextFormFields and ElevatedButton here.
-          TextFormField(
-            // The validator receives the text that the user has entered.
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter some text';
-              }
-              return null;
-            },
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Validate returns true if the form is valid, or false otherwise.
-              if (_formKey.currentState!.validate()) {
-                // If the form is valid, display a snackbar. In the real world,
-                // you'd often call a server or save the information in a database.
-                ScaffoldMessenger.of(context)
-                    .showSnackBar(SnackBar(content: Text('Processing Data')));
-              }
-            },
-            child: Text('Submit'),
-          ),
-        ],
-      ),
-    );
+    final hobbiesController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    void addHobbies(BuildContext context) {
+     users
+      .doc(id)
+      .update({
+            'hobbies': hobbiesController.text
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterLinks(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update hobbies: $error"));
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Image.asset("assets/images/editLinks.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  addHobbies(context),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "What are your hobbies?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child:
+                      TextFormField(
+                        controller: hobbiesController,
+                        decoration: InputDecoration(
+                          border: UnderlineInputBorder(),
+                          labelText: 'List some of your hobbies'
+                      )),
+                  ),
+                ])),
+      ));
   }
 }
+
+//Register Links
+class RegisterLinks extends StatefulWidget {
+  final String? id;
+  RegisterLinks({Key? key, @required this.id});
+
+  @override
+  State<StatefulWidget> createState() {
+    return RegisterLinksState(id: id);
+  }
+}
+
+class RegisterLinksState extends State<RegisterLinks> {
+  final String? id;
+  RegisterLinksState({Key? key, @required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    final igController = TextEditingController();
+    final emailController = TextEditingController();
+    final linkedinController = TextEditingController();
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    void addLinks(BuildContext context) {
+      User? user = FirebaseAuth.instance.currentUser;
+      users
+      .doc(id)
+      .update({
+            'instagramHandle': 'https://www.instagram.com/' + igController.text,
+            'email': emailController.text,
+            'linkedinURL': linkedinController.text
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Home(user: user)),
+            ),
+          )
+      .catchError((error) => print("Failed to update links: $error"));
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Image.asset("assets/images/editLinks.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        body: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: () => ({
+                  addLinks(context),
+                }),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Where else can we reach you?",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  ),
+                  Container (
+                    // alignment: Alignment.center,
+                    width: 280,
+                    child: Column( 
+                      children: [
+                        TextFormField(
+                          controller: igController,
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'instagram'
+                          )),
+                        TextFormField(
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'email'
+                        )),
+                        TextFormField(
+                          controller: linkedinController,
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'linkedin'
+                        )),
+                ],
+              )),
+            ]
+      ))));
+  }
+}
+
+//Register Courses
+// class RegisterCourses extends StatefulWidget {
+//   final String? id;
+//   RegisterCourses({Key? key, @required this.id});
+
+//   @override
+//   State<StatefulWidget> createState() {
+//     return RegisterCoursesState(id: id);
+//   }
+// }
+
+// class RegisterCoursesState extends State<RegisterCourses> {
+//   final String? id;
+//   RegisterCoursesState({Key? key, @required this.id});
+
+//   final List<String> courses = [
+//     'ENGL 112',
+//     'ENGL 110',
+//     'BIOL 112',
+//     'CPSC 110',
+//     'CPSC 210',
+//     'CPSC 213',
+//     'MATH 200',
+//     'CHEM 210',
+//     'HIST 221',
+//     'MATH 221',
+//   ];
+
+//   @override
+//   Widget build(BuildContext context) {
+//     var course;
+//     User? user = FirebaseAuth.instance.currentUser;
+//     CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+//     void addCourses(BuildContext context) {
+//      users
+//       .doc(id)
+//       .update({
+//             'courses': course.toList()
+//           })
+//       .then((value) => print('course list updated'))
+//       .catchError((error) => print("Failed to update courses: $error"));
+//     }
+
+//     return Scaffold(
+//         appBar: AppBar(
+//             title: Image.asset("assets/images/editLinks.png", scale: 1),
+//             bottomOpacity: 0,
+//             backgroundColor: Colors.white,
+//             toolbarHeight: 100.0,
+//             elevation: 0.0),
+//         body: GestureDetector(
+//             behavior: HitTestBehavior.opaque,
+//             onTap: () => ({
+//                   Navigator.push(
+//                     context,
+//                     MaterialPageRoute(builder: (context) => Home(user: user)),
+//                   ),
+//                 }),
+//             child: Center(
+//               child: Column(
+//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//                 children: [
+//                   Text(
+//                     "What courses are you taking?",
+//                     textAlign: TextAlign.center,
+//                     style: TextStyle(fontSize: 30),
+//                   ),
+//                   Padding(
+//                     padding: const EdgeInsets.symmetric(vertical: 16.0),
+//                   ),
+//                   Container (
+//                     // alignment: Alignment.center,
+//                     width: 280,
+//                     child:
+//                       DropDownField(
+//                         value: 'Select a course',
+//                         required: true,
+//                         hintText: 'Choose a course',
+//                         labelText: 'Courses',
+//                         items: courses,
+//                         strict: false,
+//                         setter: (dynamic newValue) {
+//                           course = newValue;
+//                           addCourses(context);
+//                         }),
+//                   ),
+//                 ])),
+//       ));
+//   }
+// }

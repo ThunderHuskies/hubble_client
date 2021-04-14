@@ -127,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  dropdownfield:
+    dependency: "direct main"
+    description:
+      name: dropdownfield
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.3"
   equatable:
     dependency: transitive
     description:
@@ -258,13 +265,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
-  flutter_form_builder:
-    dependency: "direct main"
-    description:
-      name: flutter_form_builder
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "6.0.0-nullsafety.1"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -272,11 +272,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.9.0"
-  flutter_localizations:
-    dependency: transitive
-    description: flutter
-    source: sdk
-    version: "0.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -571,7 +566,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   sqflite:
     dependency: transitive
     description:
