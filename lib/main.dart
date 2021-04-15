@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 // import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+=======
+>>>>>>> 6ab2c8989ca088aab49220282ea2af81c09a6cbf
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'RegisterPage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'home/Home.dart';
 
 import 'home/Home.dart';
 

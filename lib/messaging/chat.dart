@@ -287,6 +287,7 @@ class ChatScreenState extends State<ChatScreen> {
           document.data()!['type'] == 0
               // Text
               ? Container(
+                  constraints: BoxConstraints(maxWidth: 250),
                   child: Text(
                     document.data()!['content'],
                     style: TextStyle(color: Colors.black),
@@ -394,6 +395,7 @@ class ChatScreenState extends State<ChatScreen> {
                     : Container(width: 35.0),
                 document.data()!['type'] == 0
                     ? Container(
+                        constraints: BoxConstraints(maxWidth: 250),
                         child: Text(
                           document.data()!['content'],
                           style: TextStyle(color: Colors.black),
