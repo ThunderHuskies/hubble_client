@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:hubble_client/registration/newUser.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import '../home/Home.dart';
@@ -17,12 +19,37 @@ bool isPhoneVerified = true;
 bool verificationError = false;
 
 void signIn(BuildContext context) async {
+  Future<bool> checkExist(User user) async {
+    bool exists = false;
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then((doc) {
+        if (doc.exists)
+          exists = true;
+        else
+          exists = false;
+      });
+      return exists;
+    } catch (e) {
+      return false;
+    }
+  }
+
   try {
     AuthCredential credential = PhoneAuthProvider.credential(
         verificationId: _verificationId!, smsCode: currentText);
     User user = (await auth.signInWithCredential(credential)).user!;
+    bool userExists = await checkExist(user);
+    print(userExists);
+    print("${user.uid}");
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Home(user: user)));
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                userExists ? Home(user: user) : Registration(id: user.uid)));
     print("Success: ${user.uid}");
   } catch (e) {
     verificationError = true;
@@ -37,7 +64,7 @@ Future<void> validatePhone(BuildContext context) async {
       (PhoneAuthCredential phoneAuthCredential) async {
     await auth.signInWithCredential(phoneAuthCredential);
     print(
-        "Phone Number already verfied and signed in: ${auth.currentUser!.uid}");
+        "Phone Number already verified and signed in: ${auth.currentUser!.uid}");
   };
 
   //Verification failed
@@ -81,32 +108,33 @@ class EnterPhone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-          SizedBox(height: 50),
-          Image.asset('assets/images/phoneVerification.png', scale: 1),
-          RichText(
-            text: TextSpan(
-                text: "Welcome to ",
-                children: [
-                  TextSpan(
-                    text: "hubble",
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
-                style: TextStyle(color: Colors.black, fontSize: 24)),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 50),
-          PhoneNumberInput(),
-        ])));
+              SizedBox(height: 50),
+              Image.asset('assets/images/phoneVerification.png', scale: 1),
+              RichText(
+                text: TextSpan(
+                    text: "Welcome to ",
+                    children: [
+                      TextSpan(
+                        text: "hubble",
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                    style: TextStyle(color: Colors.black, fontSize: 24)),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 50),
+              PhoneNumberInput(),
+            ])));
   }
 }
 
@@ -160,18 +188,25 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
                 validatePhone(context);
               },
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              child: Text('Go back'),
+            SizedBox(height: 25),
+            ConstrainedBox(
+                constraints: BoxConstraints.tightFor(width: 120, height: 45),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ))),
+                  onPressed: () {
+                    formKey.currentState!.save();
+                  },
+                  child: Text('Register'),
+                )),
+            TextButton(
+              child: Text('Go Back'),
               onPressed: () {
                 Navigator.pop(context);
               },
-            ),
-            ElevatedButton(
-              onPressed: () {
-                formKey.currentState!.save();
-              },
-              child: Text('Register'),
             ),
           ],
         ),
@@ -190,21 +225,22 @@ class ValidatePhone extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Image.asset('assets/images/mail.png', scale: 1.0),
-      SizedBox(height: 50),
-      Text(
-        "Verification code",
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: 10),
-      ConstrainedBox(
-        child: PinCodeVerificationScreen(savedNumber),
-        constraints: BoxConstraints(maxHeight: 400),
-      ),
-    ])));
+          Image.asset('assets/images/mail.png', scale: 1.0),
+          SizedBox(height: 50),
+          Text(
+            "Verification code",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          ConstrainedBox(
+            child: PinCodeVerificationScreen(savedNumber),
+            constraints: BoxConstraints(maxHeight: 400),
+          ),
+        ])));
   }
 }
 
@@ -251,6 +287,7 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
+      resizeToAvoidBottomInset: false,
       body: GestureDetector(
         onTap: () {},
         child: Container(
@@ -402,11 +439,14 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                           setState(() {
                             hasError = false;
                             scaffoldKey.currentState!.showSnackBar(SnackBar(
-                              content: Text("Validated"),
+                              content: Text("Validated",
+                                  textAlign: TextAlign.center),
+                              backgroundColor: Colors.green,
                               duration: Duration(seconds: 2),
                               width: 280.0, // Width of the SnackBar.
                               padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0, // Inner padding for SnackBar content.
+                                horizontal:
+                                    10.0, // Inner padding for SnackBar content.
                               ),
                               behavior: SnackBarBehavior.floating,
                               shape: RoundedRectangleBorder(

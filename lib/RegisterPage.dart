@@ -1,10 +1,8 @@
-// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:carousel_slider/carousel_slider.dart';
 import './registration/phone.dart';
-import './home/Home.dart';
 
 // import 'package:firebase_auth/firebase_auth.dart';
 
@@ -41,17 +39,7 @@ class RegisterPage extends StatelessWidget {
                       MaterialPageRoute(builder: (context) => EnterPhone()));
                 },
                 color: Colors.blue,
-              ),
-              Image.asset('assets/images/orlogin.png', scale: 3.5),
-              CupertinoButton(
-                //linda remember to change this and actually add styling LOL
-                child: Text("    Sign in    "),
-                onPressed: () {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: (context) => Home()));
-                },
-                color: Colors.blue,
-              ),
+              )
             ],
           )
         ],
@@ -79,6 +67,7 @@ class ImageSliderState extends State<ImageSlider> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(children: [
         CarouselSlider(
             options: CarouselOptions(
