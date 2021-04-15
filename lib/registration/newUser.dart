@@ -750,7 +750,7 @@ class RegisterLinksState extends State<RegisterLinks> {
           })
       .then((value) => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RegisterImage(id: id)),
+              MaterialPageRoute(builder: (context) => RegisterCourses(id: id)),
             ),
           )
       .catchError((error) => print("Failed to update links: $error"));
@@ -805,7 +805,101 @@ class RegisterLinksState extends State<RegisterLinks> {
                     onPressed: () {
                      addLinks(context);
                     },
-                    child: Text('Continue to Home'),
+                    child: Text('Next'),
+                  ),
+            ]
+      )));
+  }
+}
+
+//Register Courses
+class RegisterCourses extends StatefulWidget {
+  final String? id;
+  RegisterCourses({Key? key, @required this.id});
+
+  @override
+  State<StatefulWidget> createState() {
+    return RegisterCoursesState(id: id);
+  }
+}
+
+class RegisterCoursesState extends State<RegisterCourses> {
+  final String? id;
+  RegisterCoursesState({Key? key, @required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    final c1 = TextEditingController();
+    final c2 = TextEditingController();
+    final c3 = TextEditingController();
+    var coursesList = [];
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    void addCourses(BuildContext context) {
+      coursesList = [c1.text, c2.text, c3.text];
+      users
+      .doc(id)
+      .update({
+            'courses': coursesList
+          })
+      .then((value) => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => RegisterImage(id: id)),
+            ),
+          )
+      .catchError((error) => print("Failed to update courses: $error"));
+    }
+
+    return Scaffold(
+        appBar: AppBar(
+            title: Image.asset("assets/images/editPhoto.png", scale: 1),
+            bottomOpacity: 0,
+            backgroundColor: Colors.white,
+            toolbarHeight: 100.0,
+            elevation: 0.0),
+        resizeToAvoidBottomInset: false,
+        body: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    "Enter the courses you are taking",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 30),
+                  ),
+                  // Padding(
+                  //   padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  // ),
+                  Container (
+                    alignment: Alignment.center,
+                    width: 280,
+                    child: Column( 
+                      children: [
+                        TextFormField(
+                          controller: c1,
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Enter a course'
+                          )),
+                        TextFormField(
+                          controller: c2,
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Enter a course'
+                        )),
+                        TextFormField(
+                          controller: c3,
+                          decoration: InputDecoration(
+                            border: UnderlineInputBorder(),
+                            labelText: 'Enter a course'
+                        )),
+                ],
+              )),
+              ElevatedButton(
+                    onPressed: () {
+                     addCourses(context);
+                    },
+                    child: Text('Next'),
                   ),
             ]
       )));
@@ -918,20 +1012,38 @@ class RegisterImage extends StatefulWidget {
 class RegisterImageState extends State<RegisterImage> {
   final String? id;
   RegisterImageState({Key? key, @required this.id});
-  User? user = FirebaseAuth.instance.currentUser;
+  // User? user = FirebaseAuth.instance.currentUser;
+  File? imageFile;    
+  String? uploadedFileURL;
+  bool isLoading = false;
+  String? pfp;
 
-  @override
-  Widget build(BuildContext context) {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    String? imageUrl = '';
-    File? imageFile;
-    String? pfp = '';
-    bool isLoading = false;
+//   Future chooseFile() async {    
+//    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {    
+//      setState(() {    
+//        _image = image;    
+//      });    
+//    });    
+//  }
 
+//  // upload the chosen file to the Google Firebase Firestore in the chats folder and return the uploaded file URL. 
+//  Future uploadFile() async {    
+//    StorageReference storageReference = FirebaseStorage.instance    
+//        .ref()    
+//        .child('chats/${Path.basename(_image.path)}}');    
+//    StorageUploadTask uploadTask = storageReference.putFile(_image);    
+//    await uploadTask.onComplete;    
+//    print('File Uploaded');    
+//    storageReference.getDownloadURL().then((fileURL) {    
+//      setState(() {    
+//        _uploadedFileURL = fileURL;    
+//      });    
+//    });    
+//  }
     Future uploadFile() async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     FirebaseStorage storage = FirebaseStorage.instance;
-    Reference reference = storage.ref().child('messageImages/$fileName');
+    Reference reference = storage.ref().child('profileImages/$fileName');
     UploadTask uploadTask = reference.putFile(imageFile!);
     uploadTask.whenComplete(() {
       reference.getDownloadURL().then((String imageUrl) {
@@ -963,16 +1075,20 @@ class RegisterImageState extends State<RegisterImage> {
         print(e);
       }
     }
+
+  @override
+  Widget build(BuildContext context) {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
     
     void addImage(BuildContext context) {
       users
       .doc(id)
       .update({
-            'image': pfp
+            'image': uploadedFileURL
           })
       .then((value) => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => Home(user: user)),
+              MaterialPageRoute(builder: (context) => RegisterName(id: id)),
             ),
           )
       .catchError((error) => print("Failed to update image: $error"));
