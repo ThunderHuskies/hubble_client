@@ -30,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfile> {
   String clubs = '';
   String hobbies = '';
   String lookingFor = '';
+  String pfp = '';
 
   @override
   void initState() {
@@ -41,37 +42,36 @@ class _EditProfileScreenState extends State<EditProfile> {
     lookingFor = "${snapshot!.data()!['lookingFor']}";
   }
 
-  // Future getImage() async {
-  //   ImagePicker imagePicker = ImagePicker();
-  //   PickedFile? pickedFile;
-  //   try {
-  //     pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
-  //     imageFile = File(pickedFile!.path);
-  //     uploadFile();
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  Future uploadFile() async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    FirebaseStorage storage = FirebaseStorage.instance;
+    Reference reference = storage.ref().child('profileImages/$fileName');
+    UploadTask uploadTask = reference.putFile(imageFile!);
+    uploadTask.whenComplete(() {
+      reference.getDownloadURL().then((String imageUrl) {
+        pfp = imageUrl;
+      });
+    }).catchError((onError) {
+      // setState(() {
+      // });
+      Fluttertoast.showToast(msg: "This file type is unsupported");
+    });
+  }
 
-  // Future uploadFile() async {
-  //   String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   Reference reference = storage.ref().child('profileImages/$fileName');
-  //   UploadTask uploadTask = reference.putFile(imageFile!);
-  //   uploadTask.whenComplete(() {
-  //     reference.getDownloadURL().then((String imageUrl) {
-  //       setState(() {
-  //         isLoading = false;
-  //         onSendMessage(imageUrl, 1);
-  //       });
-  //     });
-  //   }).catchError((onError) {
-  //     setState(() {
-  //       isLoading = false;
-  //     });
-  //     Fluttertoast.showToast(msg: "This file type is unsupported");
-  //   });
-  // }
+  Future getImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile? pickedFile;
+    try {
+      pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
+      imageFile = File(pickedFile!.path);
+      // setState(() {
+      //   // isLoading = true;
+      // });
+      uploadFile();
+    } catch (e) {
+      print(e);
+    }
+  }
 
   void updateProfile() {
     print(year);
@@ -86,6 +86,7 @@ class _EditProfileScreenState extends State<EditProfile> {
         'clubs': clubs,
         'hobbies': hobbies,
         'lookingFor': lookingFor,
+        'image': pfp,
       });
     }
 
@@ -117,7 +118,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                     backgroundImage:
                         CachedNetworkImageProvider(snapshot!.data()!['image']),
                   ),
-                  TextButton(onPressed: () {}, child: Text("Change Photo")),
+                  TextButton(onPressed: getImage, child: Text("Change Photo")),
                   Text(
                     snapshot!.data()!['name'],
                     style: TextStyle(fontSize: 30),

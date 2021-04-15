@@ -64,7 +64,7 @@ Future<void> validatePhone(BuildContext context) async {
       (PhoneAuthCredential phoneAuthCredential) async {
     await auth.signInWithCredential(phoneAuthCredential);
     print(
-        "Phone Number already verfied and signed in: ${auth.currentUser!.uid}");
+        "Phone Number already verified and signed in: ${auth.currentUser!.uid}");
   };
 
   //Verification failed
@@ -114,27 +114,27 @@ class EnterPhone extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-          SizedBox(height: 50),
-          Image.asset('assets/images/phoneVerification.png', scale: 1),
-          RichText(
-            text: TextSpan(
-                text: "Welcome to ",
-                children: [
-                  TextSpan(
-                    text: "hubble",
-                    style: TextStyle(
-                      fontSize: 24,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  )
-                ],
-                style: TextStyle(color: Colors.black, fontSize: 24)),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 50),
-          PhoneNumberInput(),
-        ])));
+              SizedBox(height: 50),
+              Image.asset('assets/images/phoneVerification.png', scale: 1),
+              RichText(
+                text: TextSpan(
+                    text: "Welcome to ",
+                    children: [
+                      TextSpan(
+                        text: "hubble",
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                    style: TextStyle(color: Colors.black, fontSize: 24)),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 50),
+              PhoneNumberInput(),
+            ])));
   }
 }
 
@@ -188,15 +188,22 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
                 validatePhone(context);
               },
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                formKey.currentState!.save();
-              },
-              child: Text('Register'),
-            ),
+            SizedBox(height: 25),
+            ConstrainedBox(
+                constraints: BoxConstraints.tightFor(width: 120, height: 45),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18),
+                  ))),
+                  onPressed: () {
+                    formKey.currentState!.save();
+                  },
+                  child: Text('Register'),
+                )),
             TextButton(
-              child: Text('Go back'),
+              child: Text('Go Back'),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -222,18 +229,18 @@ class ValidatePhone extends StatelessWidget {
         body: Center(
             child:
                 Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Image.asset('assets/images/mail.png', scale: 1.0),
-      SizedBox(height: 50),
-      Text(
-        "Verification code",
-        style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-      ),
-      SizedBox(height: 10),
-      ConstrainedBox(
-        child: PinCodeVerificationScreen(savedNumber),
-        constraints: BoxConstraints(maxHeight: 400),
-      ),
-    ])));
+          Image.asset('assets/images/mail.png', scale: 1.0),
+          SizedBox(height: 50),
+          Text(
+            "Verification code",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 10),
+          ConstrainedBox(
+            child: PinCodeVerificationScreen(savedNumber),
+            constraints: BoxConstraints(maxHeight: 400),
+          ),
+        ])));
   }
 }
 

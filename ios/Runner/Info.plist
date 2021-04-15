@@ -60,14 +60,8 @@
 		<string>https</string>
 	</array>
 	<key>UIBackgroundModes</key>
-<<<<<<< HEAD
-		<array>
-			<string>remote-notification</string>
-		</array>
-=======
 	<array>
 		<string>remote-notification</string>
 	</array>
->>>>>>> 6ab2c8989ca088aab49220282ea2af81c09a6cbf
 </dict>
 </plist>
