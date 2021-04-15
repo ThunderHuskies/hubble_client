@@ -190,16 +190,16 @@ class _PhoneNumberInputState extends State<PhoneNumberInput> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              child: Text('Go back'),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-            ElevatedButton(
               onPressed: () {
                 formKey.currentState!.save();
               },
               child: Text('Register'),
+            ),
+            TextButton(
+              child: Text('Go back'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ],
         ),
