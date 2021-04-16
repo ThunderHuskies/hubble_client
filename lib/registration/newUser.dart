@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:hubble_client/home/Home.dart';
 import 'package:image_picker/image_picker.dart';
 // import 'package:dropdownfield/dropdownfield.dart';
 
@@ -90,9 +92,6 @@ class RegisterNameState extends State<RegisterName> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 5.0),
-              // ),
               Container(
                 alignment: Alignment.center,
                 width: 280,
@@ -107,7 +106,7 @@ class RegisterNameState extends State<RegisterName> {
                 onPressed: () {
                   addUser(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -164,9 +163,6 @@ class RegisterAgeState extends State<RegisterAge> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                 alignment: Alignment.center,
                 width: 280,
@@ -180,7 +176,7 @@ class RegisterAgeState extends State<RegisterAge> {
                 onPressed: () {
                   addAge(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -237,9 +233,6 @@ class RegisterHometownState extends State<RegisterHometown> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                 alignment: Alignment.center,
                 width: 280,
@@ -253,7 +246,7 @@ class RegisterHometownState extends State<RegisterHometown> {
                 onPressed: () {
                   addHometown(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -310,9 +303,6 @@ class RegisterSchoolState extends State<RegisterSchool> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                 alignment: Alignment.center,
                 width: 280,
@@ -326,7 +316,7 @@ class RegisterSchoolState extends State<RegisterSchool> {
                 onPressed: () {
                   addSchool(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -383,9 +373,6 @@ class RegisterMajorState extends State<RegisterMajor> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                 alignment: Alignment.center,
                 width: 280,
@@ -399,7 +386,7 @@ class RegisterMajorState extends State<RegisterMajor> {
                 onPressed: () {
                   addMajor(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -456,9 +443,6 @@ class RegisterYearState extends State<RegisterYear> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                 alignment: Alignment.center,
                 width: 280,
@@ -473,7 +457,7 @@ class RegisterYearState extends State<RegisterYear> {
                 onPressed: () {
                   addYear(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -543,7 +527,7 @@ class RegisterClubsState extends State<RegisterClubs> {
                 onPressed: () {
                   addClubs(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ],
           ),
@@ -597,13 +581,10 @@ class RegisterHobbiesState extends State<RegisterHobbies> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
             Text(
-              "What are your hobbies?",
+              "Tell us a little about yourself",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 30),
             ),
-            // Padding(
-            //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-            // ),
             Container(
               alignment: Alignment.center,
               width: 280,
@@ -617,7 +598,7 @@ class RegisterHobbiesState extends State<RegisterHobbies> {
               onPressed: () {
                 addHobbies(context);
               },
-              child: Text('Next'),
+              child: Text('Tap to continue'),
             ),
           ])),
     );
@@ -687,7 +668,7 @@ class RegisterLookingForState extends State<RegisterLookingFor> {
               onPressed: () {
                 addLookingFor(context);
               },
-              child: Text('Next'),
+              child: Text('Tap to continue'),
             ),
           ])),
     );
@@ -750,9 +731,6 @@ class RegisterLinksState extends State<RegisterLinks> {
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                   alignment: Alignment.center,
                   width: 280,
@@ -779,7 +757,7 @@ class RegisterLinksState extends State<RegisterLinks> {
                 onPressed: () {
                   addLinks(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ])));
   }
@@ -835,13 +813,10 @@ class RegisterCoursesState extends State<RegisterCourses> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
               Text(
-                "Enter the courses you are taking",
+                "What courses are you taking?",
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30),
               ),
-              // Padding(
-              //   padding: const EdgeInsets.symmetric(vertical: 16.0),
-              // ),
               Container(
                   alignment: Alignment.center,
                   width: 280,
@@ -868,103 +843,11 @@ class RegisterCoursesState extends State<RegisterCourses> {
                 onPressed: () {
                   addCourses(context);
                 },
-                child: Text('Next'),
+                child: Text('Tap to continue'),
               ),
             ])));
   }
 }
-
-//Register Courses
-// class RegisterCourses extends StatefulWidget {
-//   final String? id;
-//   RegisterCourses({Key? key, @required this.id});
-
-//   @override
-//   State<StatefulWidget> createState() {
-//     return RegisterCoursesState(id: id);
-//   }
-// }
-
-// class RegisterCoursesState extends State<RegisterCourses> {
-//   final String? id;
-//   RegisterCoursesState({Key? key, @required this.id});
-
-//   final List<String> courses = [
-//     'ENGL 112',
-//     'ENGL 110',
-//     'BIOL 112',
-//     'CPSC 110',
-//     'CPSC 210',
-//     'CPSC 213',
-//     'MATH 200',
-//     'CHEM 210',
-//     'HIST 221',
-//     'MATH 221',
-//   ];
-
-//   @override
-//   Widget build(BuildContext context) {
-//     var course;
-//     User? user = FirebaseAuth.instance.currentUser;
-//     CollectionReference users = FirebaseFirestore.instance.collection('users');
-
-//     void addCourses(BuildContext context) {
-//      users
-//       .doc(id)
-//       .update({
-//             'courses': course.toList()
-//           })
-//       .then((value) => print('course list updated'))
-//       .catchError((error) => print("Failed to update courses: $error"));
-//     }
-
-//     return Scaffold(
-//         appBar: AppBar(
-//             title: Image.asset("assets/images/editLinks.png", scale: 1),
-//             bottomOpacity: 0,
-//             backgroundColor: Colors.white,
-//             toolbarHeight: 100.0,
-//             elevation: 0.0),
-//         body: GestureDetector(
-//             behavior: HitTestBehavior.opaque,
-//             onTap: () => ({
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(builder: (context) => Home(user: user)),
-//                   ),
-//                 }),
-//             child: Center(
-//               child: Column(
-//                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//                 children: [
-//                   Text(
-//                     "What courses are you taking?",
-//                     textAlign: TextAlign.center,
-//                     style: TextStyle(fontSize: 30),
-//                   ),
-//                   Padding(
-//                     padding: const EdgeInsets.symmetric(vertical: 16.0),
-//                   ),
-//                   Container (
-//                     // alignment: Alignment.center,
-//                     width: 280,
-//                     child:
-//                       DropDownField(
-//                         value: 'Select a course',
-//                         required: true,
-//                         hintText: 'Choose a course',
-//                         labelText: 'Courses',
-//                         items: courses,
-//                         strict: false,
-//                         setter: (dynamic newValue) {
-//                           course = newValue;
-//                           addCourses(context);
-//                         }),
-//                   ),
-//                 ])),
-//       ));
-//   }
-// }
 
 //Register image
 class RegisterImage extends StatefulWidget {
@@ -980,34 +863,11 @@ class RegisterImage extends StatefulWidget {
 class RegisterImageState extends State<RegisterImage> {
   final String? id;
   RegisterImageState({Key? key, @required this.id});
-  // User? user = FirebaseAuth.instance.currentUser;
+  User? user = FirebaseAuth.instance.currentUser;
   File? imageFile;
-  String? uploadedFileURL;
   bool isLoading = false;
   String? pfp;
 
-//   Future chooseFile() async {
-//    await ImagePicker.pickImage(source: ImageSource.gallery).then((image) {
-//      setState(() {
-//        _image = image;
-//      });
-//    });
-//  }
-
-//  // upload the chosen file to the Google Firebase Firestore in the chats folder and return the uploaded file URL.
-//  Future uploadFile() async {
-//    StorageReference storageReference = FirebaseStorage.instance
-//        .ref()
-//        .child('chats/${Path.basename(_image.path)}}');
-//    StorageUploadTask uploadTask = storageReference.putFile(_image);
-//    await uploadTask.onComplete;
-//    print('File Uploaded');
-//    storageReference.getDownloadURL().then((fileURL) {
-//      setState(() {
-//        _uploadedFileURL = fileURL;
-//      });
-//    });
-//  }
   Future uploadFile() async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     FirebaseStorage storage = FirebaseStorage.instance;
@@ -1018,7 +878,6 @@ class RegisterImageState extends State<RegisterImage> {
         setState(() {
           isLoading = false;
           pfp = imageUrl;
-          // onSendMessage(imageUrl, 1);
         });
       });
     }).catchError((onError) {
@@ -1051,11 +910,11 @@ class RegisterImageState extends State<RegisterImage> {
     void addImage(BuildContext context) {
       users
           .doc(id)
-          .update({'image': uploadedFileURL})
+          .update({'image': pfp})
           .then(
             (value) => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => RegisterName(id: id)),
+              MaterialPageRoute(builder: (context) => Home(user: user)),
             ),
           )
           .catchError((error) => print("Failed to update image: $error"));

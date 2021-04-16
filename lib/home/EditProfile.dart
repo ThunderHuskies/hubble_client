@@ -32,6 +32,8 @@ class _EditProfileScreenState extends State<EditProfile> {
   String lookingFor = '';
   String pfp = '';
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -50,10 +52,12 @@ class _EditProfileScreenState extends State<EditProfile> {
     uploadTask.whenComplete(() {
       reference.getDownloadURL().then((String imageUrl) {
         pfp = imageUrl;
+        FirebaseFirestore.instance.collection('users').doc(snapshot!.id).update({'image': pfp});
       });
     }).catchError((onError) {
-      // setState(() {
-      // });
+      setState(() {
+        isLoading = false;
+      });
       Fluttertoast.showToast(msg: "This file type is unsupported");
     });
   }
@@ -64,9 +68,9 @@ class _EditProfileScreenState extends State<EditProfile> {
     try {
       pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
       imageFile = File(pickedFile!.path);
-      // setState(() {
-      //   // isLoading = true;
-      // });
+      setState(() {
+        isLoading = true;
+      });
       uploadFile();
     } catch (e) {
       print(e);
@@ -86,7 +90,7 @@ class _EditProfileScreenState extends State<EditProfile> {
         'clubs': clubs,
         'hobbies': hobbies,
         'lookingFor': lookingFor,
-        'image': pfp,
+        // 'image': pfp,
       });
     }
 
@@ -118,7 +122,8 @@ class _EditProfileScreenState extends State<EditProfile> {
                     backgroundImage:
                         CachedNetworkImageProvider(snapshot!.data()!['image']),
                   ),
-                  TextButton(onPressed: getImage, child: Text("Change Photo")),
+                  TextButton(onPressed: getImage,
+                    child: Text("Change Photo")),
                   Text(
                     snapshot!.data()!['name'],
                     style: TextStyle(fontSize: 30),
