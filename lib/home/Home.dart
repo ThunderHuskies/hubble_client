@@ -522,38 +522,46 @@ class AccountPage extends StatelessWidget {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(15.0),
-                              ),
-                              CircleAvatar(
-                                radius: 75,
-                                backgroundImage: CachedNetworkImageProvider(
-                                    snapshot.data!['image']),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(10.0),
-                              ),
-                              Text(
-                                snapshot.data!['name'],
-                                style: TextStyle(fontSize: 30),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(5.0),
-                              ),
-                              Text(snapshot.data!['major'],
-                                  style: TextStyle(fontSize: 15)),
-                              Padding(
-                                padding: EdgeInsets.all(2.0),
-                              ),
-                              Text(snapshot.data!['yearLevel']),
-                              Padding(
-                                padding: EdgeInsets.all(2.0),
-                              ),
-                              Text("University of British Columbia"),
-                            ],
+                          GestureDetector(
+                            onTap: () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      Profile(document: snapshot.data),
+                                )),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                ),
+                                CircleAvatar(
+                                  radius: 75,
+                                  backgroundImage: CachedNetworkImageProvider(
+                                      snapshot.data!['image']),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                ),
+                                Text(
+                                  snapshot.data!['name'],
+                                  style: TextStyle(fontSize: 30),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                ),
+                                Text(snapshot.data!['major'],
+                                    style: TextStyle(fontSize: 15)),
+                                Padding(
+                                  padding: EdgeInsets.all(2.0),
+                                ),
+                                Text(snapshot.data!['yearLevel']),
+                                Padding(
+                                  padding: EdgeInsets.all(2.0),
+                                ),
+                                Text("University of British Columbia"),
+                              ],
+                            ),
                           ),
                           Padding(
                             padding: EdgeInsets.all(30.0),
