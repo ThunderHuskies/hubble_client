@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +30,7 @@ class _EditProfileScreenState extends State<EditProfile> {
   String hobbies = '';
   String lookingFor = '';
   String pfp = '';
+  bool? isLoading;
 
   @override
   void initState() {
@@ -40,6 +40,7 @@ class _EditProfileScreenState extends State<EditProfile> {
     clubs = "${snapshot!.data()!['clubs']}";
     hobbies = "${snapshot!.data()!['hobbies']}";
     lookingFor = "${snapshot!.data()!['lookingFor']}";
+    pfp = "${snapshot!.data()!['image']}";
   }
 
   Future uploadFile() async {
@@ -49,7 +50,10 @@ class _EditProfileScreenState extends State<EditProfile> {
     UploadTask uploadTask = reference.putFile(imageFile!);
     uploadTask.whenComplete(() {
       reference.getDownloadURL().then((String imageUrl) {
-        pfp = imageUrl;
+        setState(() {
+          pfp = imageUrl;
+          isLoading = false;
+        });
       });
     }).catchError((onError) {
       // setState(() {
@@ -64,9 +68,9 @@ class _EditProfileScreenState extends State<EditProfile> {
     try {
       pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
       imageFile = File(pickedFile!.path);
-      // setState(() {
-      //   // isLoading = true;
-      // });
+      setState(() {
+        isLoading = true;
+      });
       uploadFile();
     } catch (e) {
       print(e);
@@ -115,8 +119,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                 children: [
                   CircleAvatar(
                     radius: 75,
-                    backgroundImage:
-                        CachedNetworkImageProvider(snapshot!.data()!['image']),
+                    backgroundImage: CachedNetworkImageProvider(pfp),
                   ),
                   TextButton(onPressed: getImage, child: Text("Change Photo")),
                   Text(

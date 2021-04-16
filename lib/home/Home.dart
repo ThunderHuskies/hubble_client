@@ -442,40 +442,44 @@ class _ConnectionsState extends State<Connections> {
                             if (!snapshot.hasData) {
                               return new Center(child: Text('No matches!'));
                             }
-                            return ListView(
-                              children: snapshot.data!.docs
-                                  .map((DocumentSnapshot document) {
-                                return Card(
-                                    child: InkWell(
-                                        splashColor: Colors.blue.withAlpha(30),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Chat(
-                                                  user: widget.user,
-                                                  friend: document,
+                            return MediaQuery.removePadding(
+                                removeTop: true,
+                                context: context,
+                                child: ListView(
+                                  children: snapshot.data!.docs
+                                      .map((DocumentSnapshot document) {
+                                    return Card(
+                                        child: InkWell(
+                                            splashColor:
+                                                Colors.blue.withAlpha(30),
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) => Chat(
+                                                      user: widget.user,
+                                                      friend: document,
+                                                    ),
+                                                  ));
+                                            },
+                                            child: Column(children: <Widget>[
+                                              ListTile(
+                                                leading: CircleAvatar(
+                                                  backgroundImage:
+                                                      CachedNetworkImageProvider(
+                                                          document.data()![
+                                                              'image']),
                                                 ),
-                                              ));
-                                        },
-                                        child: Column(children: <Widget>[
-                                          ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundImage:
-                                                  CachedNetworkImageProvider(
-                                                      document
-                                                          .data()!['image']),
-                                            ),
-                                            title:
-                                                Text(document.data()!['name']),
-                                            subtitle:
-                                                Text(document.data()!['major']),
-                                            trailing:
-                                                Icon(Icons.message_outlined),
-                                          )
-                                        ])));
-                              }).toList(),
-                            );
+                                                title: Text(
+                                                    document.data()!['name']),
+                                                subtitle: Text(
+                                                    document.data()!['major']),
+                                                trailing: Icon(
+                                                    Icons.message_outlined),
+                                              )
+                                            ])));
+                                  }).toList(),
+                                ));
                         }
                       });
                 }

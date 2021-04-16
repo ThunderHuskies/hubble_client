@@ -33,13 +33,14 @@ class RegisterPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CupertinoButton(
+                borderRadius: BorderRadius.circular(100),
                 child: Text("Get started"),
                 onPressed: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => EnterPhone()));
                 },
                 color: Colors.blue,
-              )
+              ),
             ],
           )
         ],
