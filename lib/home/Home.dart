@@ -304,60 +304,59 @@ class UserCardsState extends State<UserCards> {
                                                                       title: new Text(
                                                                           "🤠"),
                                                                       content:
-                                                                          new Text(
-                                                                              "Added ${document.data()!['name']}!! "),
-                                                                      actions: <
-                                                                          Widget>[
+                                                                          new Text("Add ${document.data()!['name']} as a connection?"),
+                                                                      actions: <Widget>[
                                                                         new FlatButton(
                                                                             onPressed: () =>
-                                                                                Navigator.of(context).pop(),
-                                                                            child: new Text("Sweet!", style: TextStyle(color: Colors.blue[800])))
+                                                                                setState(() => {
+                                                                                Navigator.of(context).pop(true),
+                                                                                FirebaseFirestore
+                                                                                    .instance
+                                                                                    .collection(
+                                                                                        "users")
+                                                                                    .doc(widget
+                                                                                        .user!.uid)
+                                                                                    .update({
+                                                                                      'connections':
+                                                                                          FieldValue
+                                                                                              .arrayUnion([document.id])
+                                                                                    })
+                                                                                    .then((value) =>
+                                                                                        print(
+                                                                                            "User Updated"))
+                                                                                    .catchError(
+                                                                                        (error) =>
+                                                                                            print(
+                                                                                                "Failed to update user: $error")),
+                                                                                FirebaseFirestore
+                                                                                    .instance
+                                                                                    .collection(
+                                                                                        "users")
+                                                                                    .doc(
+                                                                                        document.id)
+                                                                                    .update({
+                                                                                      'connections':
+                                                                                          FieldValue
+                                                                                              .arrayUnion([widget.user!.uid])
+                                                                                    })
+                                                                                    .then((value) =>
+                                                                                        print(
+                                                                                            'Friend Updated'))
+                                                                                    .catchError(
+                                                                                        (error) =>
+                                                                                            print(
+                                                                                                "Failed to update friend: $error")),
+                                                                                  ScaffoldMessenger
+                                                                                  .of(context)
+                                                                                  .showSnackBar(SnackBar(content: Text('${document.data()!['name']} added as a connection'))),
+                                                                                }),
+                                                                            child: new Text("Yes", style: TextStyle(color: Colors.blue[800]))),
+                                                                        new FlatButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.of(context).pop(false),
+                                                                            child: new Text("No", style: TextStyle(color: Colors.blue[800])))
                                                                       ]);
                                                                 });
-                                                            var friendId = [
-                                                              document.id
-                                                            ];
-                                                            var userId = [
-                                                              widget.user!.uid
-                                                            ];
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    "users")
-                                                                .doc(widget
-                                                                    .user!.uid)
-                                                                .update({
-                                                                  'connections':
-                                                                      FieldValue
-                                                                          .arrayUnion(
-                                                                              friendId)
-                                                                })
-                                                                .then((value) =>
-                                                                    print(
-                                                                        "User Updated"))
-                                                                .catchError(
-                                                                    (error) =>
-                                                                        print(
-                                                                            "Failed to update user: $error"));
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    "users")
-                                                                .doc(
-                                                                    document.id)
-                                                                .update({
-                                                                  'connections':
-                                                                      FieldValue
-                                                                          .arrayUnion(
-                                                                              userId)
-                                                                })
-                                                                .then((value) =>
-                                                                    print(
-                                                                        'Friend Updated'))
-                                                                .catchError(
-                                                                    (error) =>
-                                                                        print(
-                                                                            "Failed to update friend: $error"));
                                                           }),
                                                     )),
                                                 Padding(
