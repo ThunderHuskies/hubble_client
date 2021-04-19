@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,6 +13,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+import '../messaging/spotify.dart';
 
 class CustomMaterialPageRoute extends MaterialPageRoute {
   @protected
@@ -143,7 +147,7 @@ class ChatScreenState extends State<ChatScreen> {
   bool isLoading = false;
   bool? isShowSticker;
   String? imageUrl;
-
+  String? spotifyAuthToken;
   final TextEditingController textEditingController = TextEditingController();
   final ScrollController listScrollController = ScrollController();
   final FocusNode focusNode = FocusNode();
@@ -171,6 +175,7 @@ class ChatScreenState extends State<ChatScreen> {
     imageUrl = '';
 
     readLocal();
+    initializeSpotifyAPI();
   }
 
   void onFocusChange() {
@@ -220,6 +225,70 @@ class ChatScreenState extends State<ChatScreen> {
     });
   }
 
+  // Future getSpotifySecret() async {
+  //   final RemoteConfig remoteConfig = RemoteConfig.instance;
+  //   await remoteConfig.fetch();
+  //   await remoteConfig.activate();
+  //   String clientSecret = remoteConfig.getValue('client_secret').asString();
+  //   String clientId = remoteConfig.getValue('client_id').asString();
+
+  //   initializeSpotifyAPI(clientId, clientSecret);
+  // }
+
+  Future initializeSpotifyAPI() async {
+    final response = await http.post(
+      Uri.parse('https://accounts.spotify.com/api/token'),
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        "Authorization":
+            'Basic OTIyMDVhODRmYWQwNDA2YTk1Njk4MDA2YjAyOWIyMzk6MmQyODJmOGU5MzM5NGQ2M2EwNzRmZjg1ODkyY2U4YjQ='
+      },
+      body: 'grant_type=client_credentials',
+    );
+
+    if (response.statusCode == 200) {
+      var jsonList = jsonDecode(response.body);
+      spotifyAuthToken = jsonList['access_token'];
+      print('authSaved');
+    } else {
+      print(response.statusCode);
+      print(response.body.toString());
+      throw Exception('failed');
+    }
+  }
+
+  Future<Song> renderSpotifySongObject(String spotifyURL) async {
+    print(spotifyURL);
+    final response = await http.get(
+      Uri.parse('https://api.spotify.com/v1/tracks/$spotifyURL'),
+      headers: {"Authorization": 'Bearer $spotifyAuthToken'},
+    );
+
+    if (response.statusCode == 200) {
+      return Song.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      print(response.body.toString());
+      throw Exception("failed");
+    }
+  }
+
+  Future<Playlist> renderSpotifyPlaylistObject(String spotifyURL) async {
+    print(spotifyURL);
+    final response = await http.get(
+      Uri.parse('https://api.spotify.com/v1/playlists/$spotifyURL'),
+      headers: {"Authorization": 'Bearer $spotifyAuthToken'},
+    );
+
+    if (response.statusCode == 200) {
+      return Playlist.fromJson(jsonDecode(response.body));
+    } else {
+      print(response.statusCode);
+      print(response.body.toString());
+      throw Exception("failed");
+    }
+  }
+
   Future uploadFile() async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     FirebaseStorage storage = FirebaseStorage.instance;
@@ -260,6 +329,67 @@ class ChatScreenState extends State<ChatScreen> {
           'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
           'content': content,
           'type': type
+        },
+      );
+    });
+    listScrollController.animateTo(0.0,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+  void onSendSpotifyMessage(Song content, int type) {
+    // type: 0 = text, 1 = image, 2 = sticker
+    textEditingController.clear();
+
+    var documentReference = FirebaseFirestore.instance
+        .collection('messages')
+        .doc(groupChatId)
+        .collection(groupChatId.toString())
+        .doc(DateTime.now().millisecondsSinceEpoch.toString());
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.set(
+        documentReference,
+        {
+          'idFrom': user!.uid,
+          'idTo': friend!.id,
+          'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+          'name': content.name,
+          'imageURL': content.imageUrl,
+          'songURL': content.spotifyUrl,
+          'songType': content.type,
+          'songArtist': content.artistName,
+          'songPreview': content.preview,
+          'releaseDate': content.date,
+          'type': type
+        },
+      );
+    });
+    listScrollController.animateTo(0.0,
+        duration: Duration(milliseconds: 300), curve: Curves.easeOut);
+  }
+
+  void onSendSpotifyPlaylistMessage(Playlist content, int type) {
+    // type: 0 = text, 1 = image, 2 = sticker
+    textEditingController.clear();
+
+    var documentReference = FirebaseFirestore.instance
+        .collection('messages')
+        .doc(groupChatId)
+        .collection(groupChatId.toString())
+        .doc(DateTime.now().millisecondsSinceEpoch.toString());
+
+    FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.set(
+        documentReference,
+        {
+          'idFrom': user!.uid,
+          'idTo': friend!.id,
+          'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+          'name': content.name,
+          'description': content.description,
+          'imageURL': content.imageUrl,
+          'songURL': content.spotifyUrl,
+          'playlistArtist': content.playlistArtist,
         },
       );
     });
@@ -351,18 +481,162 @@ class ChatScreenState extends State<ChatScreen> {
                           bottom: isLastMessageRight(index) ? 20.0 : 10.0,
                           right: 10.0),
                     )
-                  // Sticker
-                  : Container(
-                      child: Image.asset(
-                        'images/${document.data()!['content']}.gif',
-                        width: 100.0,
-                        height: 100.0,
-                        fit: BoxFit.cover,
-                      ),
-                      margin: EdgeInsets.only(
-                          bottom: isLastMessageRight(index) ? 20.0 : 10.0,
-                          right: 10.0),
-                    ),
+                  // Spotify
+                  : document.data()!['type'] == 2
+                      ? InkWell(
+                          onTap: () {
+                            launch("${document.data()!['songURL']}");
+                          },
+                          child: Container(
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0),
+                                  ),
+                                  child: Image.network(
+                                    "${document.data()!['imageURL']}",
+                                    width: 250.0,
+                                    height: 250.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(maxWidth: 250),
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(15.0),
+                                        bottomRight: Radius.circular(15.0),
+                                      )),
+                                  width: 250,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(10),
+                                      ),
+                                      Text(
+                                        "${document.data()!['name']}",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${document.data()!['songArtist']}",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(2),
+                                          ),
+                                          Text(
+                                            "•",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                          Padding(
+                                            padding: EdgeInsets.all(2),
+                                          ),
+                                          Text(
+                                            "${document.data()!['releaseDate'].toString().substring(0, 4)}",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "open.spotify.com",
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(
+                                      20.0, 0.0, 15.0, 20.0),
+                                )
+                              ],
+                            ),
+                            margin: EdgeInsets.only(
+                                bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                                right: 10.0),
+                          ),
+                        )
+                      : InkWell(
+                          onTap: () {
+                            launch("${document.data()!['songURL']}");
+                          },
+                          child: Container(
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(15.0),
+                                    topRight: Radius.circular(15.0),
+                                  ),
+                                  child: Image.network(
+                                    "${document.data()!['imageURL']}",
+                                    width: 250.0,
+                                    height: 250.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Container(
+                                  constraints: BoxConstraints(maxWidth: 250),
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey[200],
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(15.0),
+                                        bottomRight: Radius.circular(15.0),
+                                      )),
+                                  width: 250,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.all(10),
+                                      ),
+                                      Text(
+                                        "${document.data()!['name']}",
+                                        style: TextStyle(color: Colors.black),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.all(5),
+                                      ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            "${document.data()!['description']}",
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        "${document.data()!['playlistArtist']}",
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      Text(
+                                        "open.spotify.com",
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(
+                                      20.0, 0.0, 15.0, 20.0),
+                                )
+                              ],
+                            ),
+                            margin: EdgeInsets.only(
+                                bottom: isLastMessageRight(index) ? 20.0 : 10.0,
+                                right: 10.0),
+                          ),
+                        )
         ],
         mainAxisAlignment: MainAxisAlignment.end,
       );
@@ -455,16 +729,173 @@ class ChatScreenState extends State<ChatScreen> {
                             ),
                             margin: EdgeInsets.only(left: 10.0),
                           )
-                        : Container(
-                            child: Image.asset(
-                              'images/${document.data()!['content']}.gif',
-                              width: 100.0,
-                              fit: BoxFit.cover,
-                            ),
-                            margin: EdgeInsets.only(
-                                bottom: isLastMessageRight(index) ? 20.0 : 10.0,
-                                right: 10.0),
-                          ),
+                        : document.data()!['type'] == 2
+                            ? InkWell(
+                                onTap: () {
+                                  print('cheese');
+                                  launch("${document.data()!['songURL']}");
+                                },
+                                child: Container(
+                                    margin: EdgeInsets.only(left: 10.0),
+                                    child: Column(children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                        ),
+                                        child: Image.network(
+                                          "${document.data()!['imageURL']}",
+                                          width: 250.0,
+                                          height: 250.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Container(
+                                        constraints:
+                                            BoxConstraints(maxWidth: 250),
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(15.0),
+                                              bottomRight:
+                                                  Radius.circular(15.0),
+                                            )),
+                                        width: 250,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.all(10),
+                                            ),
+                                            Text(
+                                              "${document.data()!['name']}",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(5),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${document.data()!['songArtist']}",
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(2),
+                                                ),
+                                                Text(
+                                                  "•",
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.all(2),
+                                                ),
+                                                Text(
+                                                  "Song",
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                Text(
+                                                  "${document.data()!['releaseDate'].toString().substring(0, 4)}",
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              "open.spotify.com",
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: EdgeInsets.fromLTRB(
+                                            20.0, 0.0, 15.0, 20.0),
+                                      )
+                                    ])))
+                            : InkWell(
+                                onTap: () {
+                                  launch("${document.data()!['songURL']}");
+                                },
+                                child: Container(
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(15.0),
+                                          topRight: Radius.circular(15.0),
+                                        ),
+                                        child: Image.network(
+                                          "${document.data()!['imageURL']}",
+                                          width: 250.0,
+                                          height: 250.0,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      Container(
+                                        constraints:
+                                            BoxConstraints(maxWidth: 250),
+                                        decoration: BoxDecoration(
+                                            color: Colors.grey[200],
+                                            borderRadius: BorderRadius.only(
+                                              bottomLeft: Radius.circular(15.0),
+                                              bottomRight:
+                                                  Radius.circular(15.0),
+                                            )),
+                                        width: 250,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.all(10),
+                                            ),
+                                            Text(
+                                              "${document.data()!['name']}",
+                                              style: TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.all(5),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  "${document.data()!['description']}",
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                            Text(
+                                              "${document.data()!['playlistArtist']}",
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                            Text(
+                                              "open.spotify.com",
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            ),
+                                          ],
+                                        ),
+                                        padding: EdgeInsets.fromLTRB(
+                                            20.0, 0.0, 15.0, 20.0),
+                                      )
+                                    ],
+                                  ),
+                                  margin: EdgeInsets.only(
+                                      left: 10.0,
+                                      bottom: isLastMessageRight(index)
+                                          ? 5.0
+                                          : 10.0,
+                                      right: 0.0),
+                                ),
+                              ),
               ],
             ),
 
@@ -518,6 +949,7 @@ class ChatScreenState extends State<ChatScreen> {
           Padding(
             padding: EdgeInsets.all(5),
           ),
+
           // Button send image
           Material(
             child: Container(
@@ -552,8 +984,24 @@ class ChatScreenState extends State<ChatScreen> {
                   contentPadding: EdgeInsets.all(8),
                   suffixIcon: IconButton(
                     icon: Icon(Icons.send),
-                    onPressed: () =>
-                        onSendMessage(textEditingController.text, 0),
+                    onPressed: () async {
+                      if (textEditingController.text.length > 24 &&
+                          textEditingController.text.substring(0, 24) ==
+                              "https://open.spotify.com") {
+                        print(textEditingController.text.substring(24, 34));
+                        if (textEditingController.text.substring(24, 34) ==
+                            "/playlist/") {
+                          var playlist = await renderSpotifyPlaylistObject(
+                              textEditingController.text.substring(34));
+                          onSendSpotifyPlaylistMessage(playlist, 2);
+                        } else {
+                          var song = await renderSpotifySongObject(
+                              textEditingController.text.substring(31));
+                          onSendSpotifyMessage(song, 2);
+                        }
+                      }
+                      onSendMessage(textEditingController.text, 0);
+                    },
                     color: Colors.blue,
                   ),
                 ),
