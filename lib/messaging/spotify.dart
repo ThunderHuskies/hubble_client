@@ -1,8 +1,35 @@
 import 'package:flutter/material.dart';
 
-class Playlist {}
+class Playlist {
+  final String? name;
+  final String? description;
+  final String? spotifyUrl;
+  final String? imageUrl;
+  final String? playlistArtist;
 
-class Album {}
+  Playlist({
+    @required this.name,
+    @required this.description,
+    @required this.imageUrl,
+    @required this.playlistArtist,
+    @required this.spotifyUrl,
+  });
+
+  factory Playlist.fromJson(Map<String, dynamic> json) {
+    return Playlist(
+      name: json['name'],
+      description: json['description'],
+      imageUrl: json['images'][0]['url'],
+      spotifyUrl: json['external_urls']['spotify'],
+      playlistArtist: json['owner']['display_name'],
+    );
+  }
+}
+
+class Album {
+  // final String? name;
+
+}
 
 class Song {
   final String? name;
