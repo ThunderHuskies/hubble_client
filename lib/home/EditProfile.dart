@@ -109,7 +109,8 @@ class _EditProfileScreenState extends State<EditProfile> {
             onPressed: updateProfile,
           ),
         ),
-        body: Column(children: [
+        body: SingleChildScrollView(
+          child: Column(children: [
           Column(
             children: <Widget>[
               Padding(
@@ -135,7 +136,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                 ],
               ),
               Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(15.0),
               ),
               Row(
                 children: [
@@ -144,10 +145,10 @@ class _EditProfileScreenState extends State<EditProfile> {
                   ),
                   Text("Year"),
                   Padding(
-                    padding: EdgeInsets.all(22.0),
+                    padding: EdgeInsets.all(20.0),
                   ),
                   Container(
-                    width: 280,
+                    width: 200,
                     child: TextFormField(
                         onChanged: (value) => year = value,
                         controller: TextEditingController(
@@ -168,10 +169,10 @@ class _EditProfileScreenState extends State<EditProfile> {
                   ),
                   Text("Major"),
                   Padding(
-                    padding: EdgeInsets.all(18.0),
+                    padding: EdgeInsets.all(15.0),
                   ),
                   Container(
-                    width: 280,
+                    width: 200,
                     child: TextFormField(
                         onChanged: (value) => major = value,
                         controller: TextEditingController(
@@ -192,10 +193,10 @@ class _EditProfileScreenState extends State<EditProfile> {
                   ),
                   Text("Seeking"),
                   Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(8.0),
                   ),
                   Container(
-                    width: 280,
+                    width: 200,
                     child: TextFormField(
                         onChanged: (value) => lookingFor = value,
                         controller: TextEditingController(
@@ -216,10 +217,10 @@ class _EditProfileScreenState extends State<EditProfile> {
                   ),
                   Text("Clubs"),
                   Padding(
-                    padding: EdgeInsets.all(18.0),
+                    padding: EdgeInsets.all(15.0),
                   ),
                   Container(
-                      width: 280,
+                      width: 200,
                       constraints: BoxConstraints(maxHeight: 100),
                       child: TextField(
                           decoration:
@@ -240,10 +241,10 @@ class _EditProfileScreenState extends State<EditProfile> {
                   ),
                   Text("Hobbies"),
                   Padding(
-                    padding: EdgeInsets.all(10.0),
+                    padding: EdgeInsets.all(5.0),
                   ),
                   Container(
-                      width: 280,
+                      width: 200,
                       constraints: BoxConstraints(maxHeight: 100),
                       child: TextField(
                           decoration:
@@ -254,8 +255,11 @@ class _EditProfileScreenState extends State<EditProfile> {
                               text: '${snapshot!.data()!['hobbies']}'))),
                 ],
               ),
+              Padding(
+                padding: EdgeInsets.all(20.0),
+              ),
             ],
           ),
-        ]));
+        ])));
   }
 }

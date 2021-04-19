@@ -45,6 +45,7 @@ void signIn(BuildContext context) async {
     bool userExists = await checkExist(user);
     print(userExists);
     print("${user.uid}");
+    Navigator.pop(context);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -452,7 +453,8 @@ class _PinCodeVerificationScreenState extends State<PinCodeVerificationScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
-                            ));
+                            )
+                            );
                           });
                         }
                       },

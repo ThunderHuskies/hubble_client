@@ -39,11 +39,12 @@ class Profile extends StatelessWidget {
                       fit: BoxFit.cover)),
             ),
             Padding(
-              padding: EdgeInsets.all(15.0),
+              padding: EdgeInsets.only(left: 30, right: 30),
             ),
             ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 350),
+                constraints: BoxConstraints(maxWidth: 330),
                 child: Container(
+                  margin: EdgeInsets.all(10.0),
                   alignment: Alignment.topLeft,
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -52,30 +53,30 @@ class Profile extends StatelessWidget {
                         Text(
                           document!.data()!['name'],
                           style: TextStyle(
-                              fontSize: 30, fontWeight: FontWeight.bold),
+                              fontSize: 25, fontWeight: FontWeight.bold),
                         ),
                         Padding(
                           padding: EdgeInsets.all(2.0),
                         ),
                         Text(document!.data()!['major'],
-                            style: TextStyle(fontSize: 17)),
+                            style: TextStyle(fontSize: 14)),
                         Padding(
                           padding: EdgeInsets.all(1.0),
                         ),
                         Row(
                           children: [
                             Text(document!.data()!['yearLevel'],
-                                style: TextStyle(fontSize: 17)),
+                                style: TextStyle(fontSize: 14)),
                             Padding(
                               padding: EdgeInsets.all(5.0),
                             ),
-                            Text("|", style: TextStyle(fontSize: 17)),
+                            Text("|", style: TextStyle(fontSize: 14)),
                             Padding(
                               padding: EdgeInsets.all(5.0),
                             ),
                             Text(
                                 "Looking for: ${document!.data()!['lookingFor']}",
-                                style: TextStyle(fontSize: 17)),
+                                style: TextStyle(fontSize: 14)),
                           ],
                         ),
                         Padding(
@@ -86,7 +87,7 @@ class Profile extends StatelessWidget {
                             children: [
                               Container(
                                   height: 30,
-                                  width: 100,
+                                  width: 95,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: Colors.black,
@@ -98,7 +99,7 @@ class Profile extends StatelessWidget {
                                           document!.data()!['courses'][0]))),
                               Container(
                                   height: 30,
-                                  width: 100,
+                                  width: 95,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: Colors.black,
@@ -110,7 +111,7 @@ class Profile extends StatelessWidget {
                                           document!.data()!['courses'][1]))),
                               Container(
                                   height: 30,
-                                  width: 100,
+                                  width: 95,
                                   decoration: BoxDecoration(
                                     border: Border.all(
                                       color: Colors.black,

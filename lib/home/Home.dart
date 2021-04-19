@@ -112,7 +112,7 @@ class UserCard extends StatelessWidget {
         title: 'Home',
         home: Scaffold(
           appBar: AppBar(
-              title: Image.asset("assets/images/plane.png", scale: 16),
+              title: Center(child:Image.asset("assets/images/app-logo.png", scale: 3.5)),
               bottomOpacity: 0,
               backgroundColor: Colors.white,
               toolbarHeight: 75.0,
@@ -217,6 +217,7 @@ class UserCardsState extends State<UserCards> {
                                                 children: [
                                                   Row(children: [
                                                     Container(
+                                                      margin: EdgeInsets.only(left: 8.0, right: 8.0),
                                                         child: Text(
                                                       document.data()!['name'],
                                                       style: TextStyle(
@@ -225,11 +226,11 @@ class UserCardsState extends State<UserCards> {
                                                           color: Colors.white,
                                                           fontWeight:
                                                               FontWeight.bold,
-                                                          fontSize: 25.0),
+                                                          fontSize: 18.0),
                                                     )),
                                                     Padding(
                                                       padding:
-                                                          EdgeInsets.all(2.5),
+                                                          EdgeInsets.all(1),
                                                     ),
                                                     Text(
                                                       () {
@@ -246,28 +247,33 @@ class UserCardsState extends State<UserCards> {
                                                         }
                                                       }(),
                                                       style: TextStyle(
-                                                          fontSize: 25.0),
+                                                          fontSize: 20.0),
                                                     ),
                                                   ]),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(2.5),
                                                   ),
-                                                  Text(
+                                                  Container(
+                                                    margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                                    child: Text(
                                                       document.data()!['major'],
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       )),
+                                                  ),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(1.0),
                                                   ),
-                                                  Text(
-                                                      document
-                                                          .data()!['yearLevel'],
+                                                  Container(
+                                                    margin: EdgeInsets.only(left: 8.0, right: 8.0),
+                                                    child: Text(
+                                                      document.data()!['yearLevel'],
                                                       style: TextStyle(
                                                         color: Colors.white,
                                                       )),
+                                                  ),
                                                   Padding(
                                                     padding:
                                                         EdgeInsets.all(20.0),
@@ -360,7 +366,7 @@ class UserCardsState extends State<UserCards> {
                                                           }),
                                                     )),
                                                 Padding(
-                                                  padding: EdgeInsets.all(10.0),
+                                                  padding: EdgeInsets.all(2.0),
                                                 ),
                                               ],
                                             )
@@ -371,7 +377,7 @@ class UserCardsState extends State<UserCards> {
                     return Column(children: [
                       CarouselSlider(
                           options: CarouselOptions(
-                            height: 690,
+                            height: 490,
                             enlargeCenterPage: true,
                           ),
                           items: widgetList)
