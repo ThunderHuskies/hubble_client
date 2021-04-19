@@ -120,7 +120,7 @@ class _EditProfileScreenState extends State<EditProfile> {
                   CircleAvatar(
                     radius: 75,
                     backgroundImage:
-                        CachedNetworkImageProvider(snapshot!.data()!['image']),
+                        NetworkImage(snapshot!.data()!['image']),
                   ),
                   TextButton(onPressed: getImage,
                     child: Text("Change Photo")),
