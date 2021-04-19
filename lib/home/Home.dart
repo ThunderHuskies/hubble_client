@@ -304,60 +304,59 @@ class UserCardsState extends State<UserCards> {
                                                                       title: new Text(
                                                                           "🤠"),
                                                                       content:
-                                                                          new Text(
-                                                                              "Added ${document.data()!['name']}!! "),
-                                                                      actions: <
-                                                                          Widget>[
+                                                                          new Text("Add ${document.data()!['name']} as a connection?"),
+                                                                      actions: <Widget>[
                                                                         new FlatButton(
                                                                             onPressed: () =>
-                                                                                Navigator.of(context).pop(),
-                                                                            child: new Text("Sweet!", style: TextStyle(color: Colors.blue[800])))
+                                                                                setState(() => {
+                                                                                Navigator.of(context).pop(true),
+                                                                                FirebaseFirestore
+                                                                                    .instance
+                                                                                    .collection(
+                                                                                        "users")
+                                                                                    .doc(widget
+                                                                                        .user!.uid)
+                                                                                    .update({
+                                                                                      'connections':
+                                                                                          FieldValue
+                                                                                              .arrayUnion([document.id])
+                                                                                    })
+                                                                                    .then((value) =>
+                                                                                        print(
+                                                                                            "User Updated"))
+                                                                                    .catchError(
+                                                                                        (error) =>
+                                                                                            print(
+                                                                                                "Failed to update user: $error")),
+                                                                                FirebaseFirestore
+                                                                                    .instance
+                                                                                    .collection(
+                                                                                        "users")
+                                                                                    .doc(
+                                                                                        document.id)
+                                                                                    .update({
+                                                                                      'connections':
+                                                                                          FieldValue
+                                                                                              .arrayUnion([widget.user!.uid])
+                                                                                    })
+                                                                                    .then((value) =>
+                                                                                        print(
+                                                                                            'Friend Updated'))
+                                                                                    .catchError(
+                                                                                        (error) =>
+                                                                                            print(
+                                                                                                "Failed to update friend: $error")),
+                                                                                  ScaffoldMessenger
+                                                                                  .of(context)
+                                                                                  .showSnackBar(SnackBar(content: Text('${document.data()!['name']} added as a connection'))),
+                                                                                }),
+                                                                            child: new Text("Yes", style: TextStyle(color: Colors.blue[800]))),
+                                                                        new FlatButton(
+                                                                            onPressed: () =>
+                                                                                Navigator.of(context).pop(false),
+                                                                            child: new Text("No", style: TextStyle(color: Colors.blue[800])))
                                                                       ]);
                                                                 });
-                                                            var friendId = [
-                                                              document.id
-                                                            ];
-                                                            var userId = [
-                                                              widget.user!.uid
-                                                            ];
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    "users")
-                                                                .doc(widget
-                                                                    .user!.uid)
-                                                                .update({
-                                                                  'connections':
-                                                                      FieldValue
-                                                                          .arrayUnion(
-                                                                              friendId)
-                                                                })
-                                                                .then((value) =>
-                                                                    print(
-                                                                        "User Updated"))
-                                                                .catchError(
-                                                                    (error) =>
-                                                                        print(
-                                                                            "Failed to update user: $error"));
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    "users")
-                                                                .doc(
-                                                                    document.id)
-                                                                .update({
-                                                                  'connections':
-                                                                      FieldValue
-                                                                          .arrayUnion(
-                                                                              userId)
-                                                                })
-                                                                .then((value) =>
-                                                                    print(
-                                                                        'Friend Updated'))
-                                                                .catchError(
-                                                                    (error) =>
-                                                                        print(
-                                                                            "Failed to update friend: $error"));
                                                           }),
                                                     )),
                                                 Padding(
@@ -458,22 +457,74 @@ class _ConnectionsState extends State<Connections> {
                                                 ),
                                               ));
                                         },
-                                        child: Column(children: <Widget>[
-                                          ListTile(
-                                            leading: CircleAvatar(
-                                              backgroundImage:
-                                                  CachedNetworkImageProvider(
-                                                      document
-                                                          .data()!['image']),
-                                            ),
-                                            title:
-                                                Text(document.data()!['name']),
-                                            subtitle:
-                                                Text(document.data()!['major']),
-                                            trailing:
-                                                Icon(Icons.message_outlined),
-                                          )
-                                        ])));
+                                        child: Dismissible(
+                                            background: Container(
+                                              color: Colors.red,
+                                              child: Icon(
+                                                Icons.delete,
+                                                color: Colors.white,
+                                              )
+                                              ),
+                                            key: Key(widget.user!.uid),
+                                            confirmDismiss: (DismissDirection direction) async {
+                                              await showDialog(
+                                                context:
+                                                    context,
+                                                builder:
+                                                    (BuildContext
+                                                        context) {
+                                                  return CupertinoAlertDialog(
+                                                      title: new Text(
+                                                          "‼️"),
+                                                      content:
+                                                          new Text(
+                                                              "Are you sure you want to remove ${document.data()!['name']} as a connection?"),
+                                                      actions: <Widget>[
+                                                        new FlatButton(
+                                                            onPressed: () =>
+                                                              setState(() => {
+                                                                Navigator.of(context).pop(true),
+                                                                //removes user from your connections list
+                                                                FirebaseFirestore.instance.collection('users').doc(widget.user!.uid).update({
+                                                                  'connections': FieldValue.arrayRemove([document.id])
+                                                                })
+                                                                .then((value) => print('Deleted ${document.id} from connections'))
+                                                                .catchError((error) => print('Error with deleting user: ${document.id} => $error')),
+                                                                //removes you from the user's connections list
+                                                                FirebaseFirestore.instance.collection('users').doc(document.id).update({
+                                                                  'connections': FieldValue.arrayRemove([widget.user!.uid])
+                                                                })
+                                                                .then((value) => print('Deleted you from ${document.id} connections'))
+                                                                .catchError((error) => print('Error with deleting user: ${widget.user!.uid} => $error')),
+                                                                ScaffoldMessenger
+                                                                  .of(context)
+                                                                  .showSnackBar(SnackBar(content: Text('${document.data()!['name']} removed as connection'))),
+                                                              }),
+                                                            child: Text("Remove", style: TextStyle(color: Colors.blue[800])
+                                                           )),
+                                                        new FlatButton(
+                                                          onPressed: () => Navigator.of(context).pop(false),
+                                                          child:  Text("Cancel", style: TextStyle(color: Colors.blue[800]))
+                                                        ),
+                                                      ]);
+                                                });
+                                            },
+                                            child: Column(children: <Widget>[
+                                            ListTile(
+                                              leading: CircleAvatar(
+                                                backgroundImage:
+                                                    CachedNetworkImageProvider(
+                                                        document
+                                                            .data()!['image']),
+                                              ),
+                                              title:
+                                                  Text(document.data()!['name']),
+                                              subtitle:
+                                                  Text(document.data()!['major']),
+                                              trailing:
+                                                  Icon(Icons.message_outlined),
+                                            )
+                                ]))));
                               }).toList(),
                             );
                         }
