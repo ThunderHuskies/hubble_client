@@ -209,10 +209,12 @@ class ChatScreenState extends State<ChatScreen> {
       pickedFile = await imagePicker.getImage(source: ImageSource.gallery);
       imageFile = File(pickedFile!.path);
       setState(() {
+        print(imageFile);
         isLoading = true;
       });
       uploadFile();
     } catch (e) {
+      print("err");
       print(e);
     }
   }
@@ -295,8 +297,11 @@ class ChatScreenState extends State<ChatScreen> {
     Reference reference = storage.ref().child('messageImages/$fileName');
     UploadTask uploadTask = reference.putFile(imageFile!);
     uploadTask.whenComplete(() {
+      print(imageUrl);
       reference.getDownloadURL().then((String imageUrl) {
+        print(imageUrl);
         setState(() {
+          print('imageUrl');
           isLoading = false;
           onSendMessage(imageUrl, 1);
         });
