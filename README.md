@@ -1,9 +1,9 @@
 # hubble
 
 Demo Live Links: 
-youtu.be/-GaKWMUCaaM?t=4511
-goo.gle/GoogleCloudDemoWeek
-https://hubbleapp.dev
+* Live Demo to Google Engineers: https://youtu.be/-GaKWMUCaaM?t=4511
+* Event Link: https://goo.gle/GoogleCloudDemoWeek
+* Closed Beta Registration: https://hubbleapp.dev
 
 ## Project introduction
 With virtual school (yay Zoom!) and no in-person social events (rip Beta Apple Pie), it was hard to meet people with similar interests in your classes so you could be project partners/study buddies/friends. hubble takes care of all of this with a custom matching algorithm that lets you know how similar you are to other students based on similar courses, interests and who they are!
