@@ -506,6 +506,7 @@ class RegisterClubsState extends State<RegisterClubs> {
             toolbarHeight: 100.0,
             elevation: 0.0),
         body: Center(
+            child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -531,7 +532,7 @@ class RegisterClubsState extends State<RegisterClubs> {
               ),
             ],
           ),
-        ));
+        )));
   }
 }
 
@@ -577,9 +578,10 @@ class RegisterHobbiesState extends State<RegisterHobbies> {
           toolbarHeight: 100.0,
           elevation: 0.0),
       body: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
+          child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
             Text(
               "Tell us a little about yourself",
               textAlign: TextAlign.center,
@@ -600,7 +602,7 @@ class RegisterHobbiesState extends State<RegisterHobbies> {
               },
               child: Text('Tap to continue'),
             ),
-          ])),
+          ]))),
     );
   }
 }

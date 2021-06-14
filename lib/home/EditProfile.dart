@@ -52,7 +52,10 @@ class _EditProfileScreenState extends State<EditProfile> {
     uploadTask.whenComplete(() {
       reference.getDownloadURL().then((String imageUrl) {
         pfp = imageUrl;
-        FirebaseFirestore.instance.collection('users').doc(snapshot!.id).update({'image': pfp});
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(snapshot!.id)
+            .update({'image': pfp});
       });
     }).catchError((onError) {
       setState(() {
@@ -109,7 +112,8 @@ class _EditProfileScreenState extends State<EditProfile> {
             onPressed: updateProfile,
           ),
         ),
-        body: Column(children: [
+        body: SingleChildScrollView(
+            child: Column(children: [
           Column(
             children: <Widget>[
               Padding(
@@ -119,11 +123,9 @@ class _EditProfileScreenState extends State<EditProfile> {
                 children: [
                   CircleAvatar(
                     radius: 75,
-                    backgroundImage:
-                        NetworkImage(snapshot!.data()!['image']),
+                    backgroundImage: NetworkImage(snapshot!.data()!['image']),
                   ),
-                  TextButton(onPressed: getImage,
-                    child: Text("Change Photo")),
+                  TextButton(onPressed: getImage, child: Text("Change Photo")),
                   Text(
                     snapshot!.data()!['name'],
                     style: TextStyle(fontSize: 30),
@@ -256,6 +258,6 @@ class _EditProfileScreenState extends State<EditProfile> {
               ),
             ],
           ),
-        ]));
+        ])));
   }
 }
