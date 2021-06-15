@@ -17,12 +17,11 @@ import '../home/Profile.dart';
 Future<List<MatchRating>> findMatches(String uid) async {
   List<MatchRating> matchList = [];
   final response = await http.post(
-    Uri.parse(
-        'https://us-central1-c-students-b7a3d.cloudfunctions.net/findMatches'),
+    Uri.parse('https://us-central1-c-students-b7a3d.cloudfunctions.net/findMatches'),
     headers: {"Content-Type": "application/json"},
-    body: jsonEncode(<String, String>{
-      'uid': uid,
-    }),
+    body: jsonEncode(
+      <String, String>{'uid': uid},
+    ),
   );
 
   if (response.statusCode == 200) {
@@ -78,27 +77,36 @@ class _HomePageState extends State<Home> {
       AccountPage(user: widget.user),
     ];
     return Scaffold(
-        body: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
+      body: SafeArea(
+        child: Center(
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blue),
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: _widgetOptions.elementAt(_selectedIndex),
+          ),
         ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.chat_bubble_outline_rounded),
-              label: 'Connections',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_rounded),
-              label: 'Account',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onNavTapped,
-        ));
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.chat_bubble_outline_rounded),
+            label: 'Connections',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_rounded),
+            label: 'Account',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        onTap: _onNavTapped,
+      ),
+    );
   }
 }
 
@@ -111,15 +119,15 @@ class UserCard extends StatelessWidget {
     return MaterialApp(
         title: 'Home',
         home: Scaffold(
-          appBar: AppBar(
-              title: Image.asset(
-                "assets/images/plane.png",
-                scale: 3.5,
-              ),
-              bottomOpacity: 0,
-              backgroundColor: Colors.white,
-              toolbarHeight: 75.0,
-              elevation: 0.0),
+          // appBar: AppBar(
+          //     title: Image.asset(
+          //       "assets/images/plane.png",
+          //       scale: 3.5,
+          //     ),
+          //     bottomOpacity: 0,
+          //     backgroundColor: Colors.white,
+          //     toolbarHeight: 75.0,
+          //     elevation: 0.0),
           body: user != null ? UserCards(user: user) : RegisterPage(),
         ));
   }
@@ -139,237 +147,210 @@ class UserCardsState extends State<UserCards> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: FutureBuilder<List<MatchRating>>(
-      future: findMatches(widget.user!.uid),
-      builder: (context, snapshot) {
-        if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        } else if (snapshot.hasData) {
-          List<MatchRating> matchData = snapshot.data!;
-          List<String> userUID = [];
-          userUID.add(widget.user!.uid);
-          return StreamBuilder<QuerySnapshot>(
+      body: FutureBuilder<List<MatchRating>>(
+        future: findMatches(widget.user!.uid),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          } else if (snapshot.hasData) {
+            List<MatchRating> matchData = snapshot.data!;
+            List<String> userUID = [];
+            userUID.add(widget.user!.uid);
+            return StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
                   .collection("users")
-                  .where(FieldPath.documentId, whereNotIn: userUID)
+                  .where(
+                    FieldPath.documentId,
+                    whereNotIn: userUID,
+                  )
                   .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError)
-                  return new Center(child: Text('${snapshot.error}'));
+              builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) return new Center(child: Text('${snapshot.error}'));
                 switch (snapshot.connectionState) {
                   case ConnectionState.none:
                   case ConnectionState.waiting:
                     return new Center(child: new CircularProgressIndicator());
                   default:
-                    if (!snapshot.hasData) {
-                      return new Center(child: Text('No one...yet...'));
-                    }
+                    if (!snapshot.hasData) return new Center(child: Text('No one...yet...'));
                     int n = -1;
-                    List<Widget> widgetList =
-                        snapshot.data!.docs.map((DocumentSnapshot document) {
+                    List<Widget> widgetList = snapshot.data!.docs.map((DocumentSnapshot document) {
                       n++;
                       return Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
-                          ),
-                          child: InkWell(
-                              splashColor: Colors.blue.withAlpha(30),
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context2) => Profile(
-                                        document: document,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                        child: InkWell(
+                          splashColor: Colors.blue.withAlpha(30),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context2) => Profile(document: document),
+                              ),
+                            );
+                          },
+                          child: Stack(children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                image: DecorationImage(
+                                  image: CachedNetworkImageProvider(document.data()!['image']),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.bottomCenter,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(25),
+                                gradient: LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: <Color>[
+                                    Colors.black.withAlpha(10),
+                                    Colors.black12,
+                                    Colors.black54,
+                                  ],
+                                ),
+                              ),
+                              child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          child: Text(
+                                            document.data()!['name'],
+                                            style: TextStyle(
+                                              fontFamily: 'Open Sans',
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 25.0,
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(padding: EdgeInsets.all(2.5)),
+                                        Text(
+                                          () {
+                                            if (matchData[n].rating! < 3) {
+                                              return "😃";
+                                            } else if (matchData[n].rating! < 10) {
+                                              return "😆";
+                                            } else {
+                                              return "🤩";
+                                            }
+                                          }(),
+                                          style: TextStyle(fontSize: 25.0),
+                                        )
+                                      ],
+                                    ),
+                                    Padding(padding: EdgeInsets.all(2.5)),
+                                    Text(
+                                      document.data()!['major'],
+                                      style: TextStyle(
+                                        color: Colors.white,
                                       ),
-                                    ));
-                              },
-                              child: Stack(
-                                children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        image: DecorationImage(
-                                          image: CachedNetworkImageProvider(
-                                              document.data()!['image']),
-                                          fit: BoxFit.cover,
-                                        )),
-                                  ),
-                                  Container(
-                                      alignment: Alignment.bottomCenter,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(50),
-                                        gradient: LinearGradient(
-                                          begin: Alignment.topCenter,
-                                          end: Alignment.bottomCenter,
-                                          colors: <Color>[
-                                            Colors.black.withAlpha(10),
-                                            Colors.black12,
-                                            Colors.black54
-                                          ],
+                                    ),
+                                    Padding(padding: EdgeInsets.all(1.0)),
+                                    Text(
+                                      document.data()!['yearLevel'],
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    Padding(padding: EdgeInsets.all(20.0))
+                                  ],
+                                ),
+                                Padding(padding: EdgeInsets.only(right: 8.0)),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      decoration: ShapeDecoration(
+                                        color: Colors.white,
+                                        shape: CircleBorder(),
+                                      ),
+                                      child: Transform.rotate(
+                                        angle: -(math.pi / 5.0),
+                                        child: IconButton(
+                                          iconSize: 30.0,
+                                          icon: const Icon(Icons.insert_link_rounded),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return CupertinoAlertDialog(
+                                                  title: new Text("🤠"),
+                                                  content: new Text("Add ${document.data()!['name']} as a connection?"),
+                                                  actions: <Widget>[
+                                                    new FlatButton(
+                                                      onPressed: () => setState(
+                                                        () => {
+                                                          Navigator.of(context).pop(true),
+                                                          FirebaseFirestore.instance
+                                                              .collection("users")
+                                                              .doc(widget.user!.uid)
+                                                              .update({
+                                                                'connections': FieldValue.arrayUnion([document.id])
+                                                              })
+                                                              .then((value) => print("User Updated"))
+                                                              .catchError((error) => print("Failed to update user: $error")),
+                                                          FirebaseFirestore.instance
+                                                              .collection("users")
+                                                              .doc(document.id)
+                                                              .update({
+                                                                'connections': FieldValue.arrayUnion([widget.user!.uid])
+                                                              })
+                                                              .then((value) => print('Friend Updated'))
+                                                              .catchError((error) => print("Failed to update friend: $error")),
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                              SnackBar(content: Text('${document.data()!['name']} added as a connection'))),
+                                                        },
+                                                      ),
+                                                      child: new Text("Yes", style: TextStyle(color: Colors.blue[800])),
+                                                    ),
+                                                    new FlatButton(
+                                                      onPressed: () => Navigator.of(context).pop(false),
+                                                      child: new Text("No", style: TextStyle(color: Colors.blue[800])),
+                                                    )
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
                                         ),
                                       ),
-                                      child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          children: [
-                                            Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(children: [
-                                                    Container(
-                                                        child: Text(
-                                                      document.data()!['name'],
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Open Sans',
-                                                          color: Colors.white,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 25.0),
-                                                    )),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.all(2.5),
-                                                    ),
-                                                    Text(
-                                                      () {
-                                                        if (matchData[n]
-                                                                .rating! <
-                                                            3) {
-                                                          return "😃";
-                                                        } else if (matchData[n]
-                                                                .rating! <
-                                                            10) {
-                                                          return "😆";
-                                                        } else {
-                                                          return "🤩";
-                                                        }
-                                                      }(),
-                                                      style: TextStyle(
-                                                          fontSize: 25.0),
-                                                    ),
-                                                  ]),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.all(2.5),
-                                                  ),
-                                                  Text(
-                                                      document.data()!['major'],
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      )),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.all(1.0),
-                                                  ),
-                                                  Text(
-                                                      document
-                                                          .data()!['yearLevel'],
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                      )),
-                                                  Padding(
-                                                    padding:
-                                                        EdgeInsets.all(20.0),
-                                                  ),
-                                                ]),
-                                            Padding(
-                                              padding:
-                                                  EdgeInsets.only(right: 8.0),
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Container(
-                                                    decoration: ShapeDecoration(
-                                                      color: Colors.white,
-                                                      shape: CircleBorder(),
-                                                    ),
-                                                    child: Transform.rotate(
-                                                      angle: -(math.pi / 5.0),
-                                                      child: IconButton(
-                                                          iconSize: 30.0,
-                                                          icon: const Icon(Icons
-                                                              .insert_link_rounded),
-                                                          onPressed: () {
-                                                            showDialog(
-                                                                context:
-                                                                    context,
-                                                                builder:
-                                                                    (BuildContext
-                                                                        context) {
-                                                                  return CupertinoAlertDialog(
-                                                                      title: new Text(
-                                                                          "🤠"),
-                                                                      content:
-                                                                          new Text(
-                                                                              "Add ${document.data()!['name']} as a connection?"),
-                                                                      actions: <
-                                                                          Widget>[
-                                                                        new FlatButton(
-                                                                            onPressed: () => setState(() =>
-                                                                                {
-                                                                                  Navigator.of(context).pop(true),
-                                                                                  FirebaseFirestore.instance
-                                                                                      .collection("users")
-                                                                                      .doc(widget.user!.uid)
-                                                                                      .update({
-                                                                                        'connections': FieldValue.arrayUnion([
-                                                                                          document.id
-                                                                                        ])
-                                                                                      })
-                                                                                      .then((value) => print("User Updated"))
-                                                                                      .catchError((error) => print("Failed to update user: $error")),
-                                                                                  FirebaseFirestore.instance
-                                                                                      .collection("users")
-                                                                                      .doc(document.id)
-                                                                                      .update({
-                                                                                        'connections': FieldValue.arrayUnion([
-                                                                                          widget.user!.uid
-                                                                                        ])
-                                                                                      })
-                                                                                      .then((value) => print('Friend Updated'))
-                                                                                      .catchError((error) => print("Failed to update friend: $error")),
-                                                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${document.data()!['name']} added as a connection'))),
-                                                                                }),
-                                                                            child:
-                                                                                new Text("Yes", style: TextStyle(color: Colors.blue[800]))),
-                                                                        new FlatButton(
-                                                                            onPressed: () =>
-                                                                                Navigator.of(context).pop(false),
-                                                                            child: new Text("No", style: TextStyle(color: Colors.blue[800])))
-                                                                      ]);
-                                                                });
-                                                          }),
-                                                    )),
-                                                Padding(
-                                                  padding: EdgeInsets.all(10.0),
-                                                ),
-                                              ],
-                                            )
-                                          ])),
-                                ],
-                              )));
-                    }).toList();
-                    return Column(children: [
-                      CarouselSlider(
+                                    ),
+                                    Padding(padding: EdgeInsets.all(10.0))
+                                  ],
+                                )
+                              ]),
+                            ),
+                          ]),
+                        ),
+                      );
+                    }).toList(); //converts to array
+                    return Column(
+                      children: [
+                        CarouselSlider(
                           options: CarouselOptions(
-                            height: 690,
                             enlargeCenterPage: true,
                           ),
-                          items: widgetList)
-                    ]);
+                          items: widgetList,
+                        ),
+                      ],
+                    );
                 }
-              });
-        }
-        return Center(child: CircularProgressIndicator());
-      },
-    ));
+              },
+            );
+          }
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+    );
   }
 }
 
@@ -386,158 +367,133 @@ class _ConnectionsState extends State<Connections> {
   Widget build(BuildContext context) {
     Future<List> getConnectionsList() async {
       var connectionList = [];
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(widget.user!.uid)
-          .get()
-          .then((DocumentSnapshot document) {
+      await FirebaseFirestore.instance.collection("users").doc(widget.user!.uid).get().then((DocumentSnapshot document) {
         connectionList = document.data()!['connections'];
       });
       return connectionList;
     }
 
     return CupertinoPageScaffold(
-        child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                CupertinoSliverNavigationBar(
-                  automaticallyImplyLeading: false,
-                  largeTitle: Text("Connections"),
-                ),
-              ];
-            },
-            body: FutureBuilder<List>(
-              future: getConnectionsList(),
-              builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
-                if (snapshot.hasData) {
-                  return StreamBuilder<QuerySnapshot>(
-                      stream: FirebaseFirestore.instance
-                          .collection("users")
-                          .where(FieldPath.documentId, whereIn: snapshot.data)
-                          .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<QuerySnapshot> snapshot) {
-                        if (snapshot.hasError)
-                          return new Center(child: Text('${snapshot.error}'));
-                        switch (snapshot.connectionState) {
-                          case ConnectionState.none:
-                          case ConnectionState.waiting:
-                            return new Center(
-                                child: new CircularProgressIndicator());
-                          default:
-                            if (!snapshot.hasData) {
-                              return new Center(child: Text('No matches!'));
-                            }
-                            return ListView(
-                              children: snapshot.data!.docs
-                                  .map((DocumentSnapshot document) {
-                                return Card(
-                                    child: InkWell(
-                                        splashColor: Colors.blue.withAlpha(30),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) => Chat(
-                                                  user: widget.user,
-                                                  friend: document,
-                                                ),
-                                              ));
-                                        },
-                                        child: Dismissible(
-                                            background: Container(
-                                                color: Colors.red,
-                                                child: Icon(
-                                                  Icons.delete,
-                                                  color: Colors.white,
-                                                )),
-                                            key: Key(widget.user!.uid),
-                                            confirmDismiss: (DismissDirection
-                                                direction) async {
-                                              await showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return CupertinoAlertDialog(
-                                                        title: new Text("‼️"),
-                                                        content: new Text(
-                                                            "Are you sure you want to remove ${document.data()!['name']} as a connection?"),
-                                                        actions: <Widget>[
-                                                          new FlatButton(
-                                                              onPressed: () =>
-                                                                  setState(
-                                                                      () => {
-                                                                            Navigator.of(context).pop(true),
-                                                                            //removes user from your connections list
-                                                                            FirebaseFirestore.instance
-                                                                                .collection('users')
-                                                                                .doc(widget.user!.uid)
-                                                                                .update({
-                                                                                  'connections': FieldValue.arrayRemove([
-                                                                                    document.id
-                                                                                  ])
-                                                                                })
-                                                                                .then((value) => print('Deleted ${document.id} from connections'))
-                                                                                .catchError((error) => print('Error with deleting user: ${document.id} => $error')),
-                                                                            //removes you from the user's connections list
-                                                                            FirebaseFirestore.instance
-                                                                                .collection('users')
-                                                                                .doc(document.id)
-                                                                                .update({
-                                                                                  'connections': FieldValue.arrayRemove([
-                                                                                    widget.user!.uid
-                                                                                  ])
-                                                                                })
-                                                                                .then((value) => print('Deleted you from ${document.id} connections'))
-                                                                                .catchError((error) => print('Error with deleting user: ${widget.user!.uid} => $error')),
-                                                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${document.data()!['name']} removed as connection'))),
-                                                                          }),
-                                                              child: Text(
-                                                                  "Remove",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                              .blue[
-                                                                          800]))),
-                                                          new FlatButton(
-                                                              onPressed: () =>
-                                                                  Navigator.of(
-                                                                          context)
-                                                                      .pop(
-                                                                          false),
-                                                              child: Text(
-                                                                  "Cancel",
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                              .blue[
-                                                                          800]))),
-                                                        ]);
-                                                  });
-                                            },
-                                            child: Column(children: <Widget>[
-                                              ListTile(
-                                                leading: CircleAvatar(
-                                                  backgroundImage:
-                                                      CachedNetworkImageProvider(
-                                                          document.data()![
-                                                              'image']),
-                                                ),
-                                                title: Text(
-                                                    document.data()!['name']),
-                                                subtitle: Text(
-                                                    document.data()!['major']),
-                                                trailing: Icon(
-                                                    Icons.message_outlined),
-                                              )
-                                            ]))));
-                              }).toList(),
-                            );
-                        }
-                      });
-                }
-                return Center(child: CircularProgressIndicator());
-              },
-            )));
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            CupertinoSliverNavigationBar(
+              automaticallyImplyLeading: false,
+              largeTitle: Text("Connections"),
+            ),
+          ];
+        },
+        body: FutureBuilder<List>(
+          future: getConnectionsList(),
+          builder: (BuildContext context, AsyncSnapshot<List> snapshot) {
+            if (snapshot.hasData) {
+              return StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance.collection("users").where(FieldPath.documentId, whereIn: snapshot.data).snapshots(),
+                builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasError) return new Center(child: Text('${snapshot.error}'));
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return new Center(child: new CircularProgressIndicator());
+                    default:
+                      if (!snapshot.hasData) {
+                        return new Center(child: Text('No matches!'));
+                      }
+                      return ListView(
+                        children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                          return Card(
+                            child: InkWell(
+                              splashColor: Colors.blue.withAlpha(30),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => Chat(
+                                      user: widget.user,
+                                      friend: document,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Dismissible(
+                                background: Container(
+                                    color: Colors.red,
+                                    child: Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    )),
+                                key: Key(widget.user!.uid),
+                                confirmDismiss: (DismissDirection direction) async {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return CupertinoAlertDialog(
+                                        title: new Text("‼️"),
+                                        content: new Text("Are you sure you want to remove ${document.data()!['name']} as a connection?"),
+                                        actions: <Widget>[
+                                          new FlatButton(
+                                            onPressed: () => setState(
+                                              () => {
+                                                Navigator.of(context).pop(true),
+                                                //removes user from your connections list
+                                                FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(widget.user!.uid)
+                                                    .update({
+                                                      'connections': FieldValue.arrayRemove([document.id])
+                                                    })
+                                                    .then((value) => print('Deleted ${document.id} from connections'))
+                                                    .catchError((error) => print('Error with deleting user: ${document.id} => $error')),
+                                                //removes you from the user's connections list
+                                                FirebaseFirestore.instance
+                                                    .collection('users')
+                                                    .doc(document.id)
+                                                    .update({
+                                                      'connections': FieldValue.arrayRemove([widget.user!.uid])
+                                                    })
+                                                    .then((value) => print('Deleted you from ${document.id} connections'))
+                                                    .catchError((error) => print('Error with deleting user: ${widget.user!.uid} => $error')),
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(SnackBar(content: Text('${document.data()!['name']} removed as connection'))),
+                                              },
+                                            ),
+                                            child: Text("Remove", style: TextStyle(color: Colors.blue[800])),
+                                          ),
+                                          new FlatButton(
+                                            onPressed: () => Navigator.of(context).pop(false),
+                                            child: Text("Cancel", style: TextStyle(color: Colors.blue[800])),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Column(
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: CircleAvatar(
+                                        backgroundImage: CachedNetworkImageProvider(document.data()!['image']),
+                                      ),
+                                      title: Text(document.data()!['name']),
+                                      subtitle: Text(document.data()!['major']),
+                                      trailing: Icon(Icons.message_outlined),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+                  }
+                },
+              );
+            }
+            return Center(child: CircularProgressIndicator());
+          },
+        ),
+      ),
+    );
   }
 }
 
@@ -548,116 +504,105 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-        child: NestedScrollView(
-            headerSliverBuilder:
-                (BuildContext context, bool innerBoxIsScrolled) {
-              return <Widget>[
-                CupertinoSliverNavigationBar(
-                  automaticallyImplyLeading: false,
-                  largeTitle: Text("My Account"),
-                ),
-              ];
-            },
-            body: StreamBuilder<DocumentSnapshot>(
-                stream: FirebaseFirestore.instance
-                    .collection("users")
-                    .doc(user!.uid)
-                    .snapshots(),
-                builder: (BuildContext context,
-                    AsyncSnapshot<DocumentSnapshot> snapshot) {
-                  if (snapshot.hasError)
-                    return new Center(child: Text('${snapshot.error}'));
-                  switch (snapshot.connectionState) {
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return new Center(child: new CircularProgressIndicator());
-                    default:
-                      if (!snapshot.hasData) {
-                        return new Center(child: Text('No account?'));
-                      }
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          GestureDetector(
+      child: NestedScrollView(
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          return <Widget>[
+            CupertinoSliverNavigationBar(
+              automaticallyImplyLeading: false,
+              largeTitle: Text("My Account"),
+            ),
+          ];
+        },
+        body: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance.collection("users").doc(user!.uid).snapshots(),
+          builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) return new Center(child: Text('${snapshot.error}'));
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return new Center(child: new CircularProgressIndicator());
+              default:
+                if (!snapshot.hasData) {
+                  return new Center(child: Text('No account?'));
+                }
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Profile(document: snapshot.data),
+                        ),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Padding(padding: EdgeInsets.all(15.0)),
+                          CircleAvatar(
+                            radius: 75,
+                            backgroundImage: CachedNetworkImageProvider(snapshot.data!['image']),
+                          ),
+                          Padding(padding: EdgeInsets.all(10.0)),
+                          Text(
+                            snapshot.data!['name'],
+                            style: TextStyle(fontSize: 30),
+                          ),
+                          Padding(padding: EdgeInsets.all(5.0)),
+                          Text(snapshot.data!['major'], style: TextStyle(fontSize: 15)),
+                          Padding(padding: EdgeInsets.all(2.0)),
+                          Text(snapshot.data!['yearLevel']),
+                          Padding(padding: EdgeInsets.all(2.0)),
+                          Text("University of British Columbia"),
+                        ],
+                      ),
+                    ),
+                    Padding(padding: EdgeInsets.all(30.0)),
+                    Row(children: [
+                      Flexible(
+                        child: Card(
+                          child: InkWell(
+                            splashColor: Colors.blue.withAlpha(30),
                             onTap: () => Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      Profile(document: snapshot.data),
-                                )),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.all(15.0),
-                                ),
-                                CircleAvatar(
-                                  radius: 75,
-                                  backgroundImage: CachedNetworkImageProvider(
-                                      snapshot.data!['image']),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                ),
-                                Text(
-                                  snapshot.data!['name'],
-                                  style: TextStyle(fontSize: 30),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.all(5.0),
-                                ),
-                                Text(snapshot.data!['major'],
-                                    style: TextStyle(fontSize: 15)),
-                                Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                ),
-                                Text(snapshot.data!['yearLevel']),
-                                Padding(
-                                  padding: EdgeInsets.all(2.0),
-                                ),
-                                Text("University of British Columbia"),
-                              ],
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => EditProfile(snapshot: snapshot.data!),
+                              ),
+                            ),
+                            child: ListTile(
+                              title: Text("Edit Profile"),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                              ),
                             ),
                           ),
-                          Padding(
-                            padding: EdgeInsets.all(30.0),
+                        ),
+                      ),
+                    ]),
+                    Flexible(
+                      child: Card(
+                        child: ListTile(
+                          title: Text("Change Schools"),
+                          trailing: Icon(Icons.arrow_forward_ios_rounded),
+                        ),
+                      ),
+                    ),
+                    Flexible(
+                      child: Card(
+                        child: ListTile(
+                          title: Text("Sign Out"),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios_rounded,
                           ),
-                          Row(children: [
-                            Flexible(
-                                child: Card(
-                                    child: InkWell(
-                              splashColor: Colors.blue.withAlpha(30),
-                              onTap: () => Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditProfile(snapshot: snapshot.data!),
-                                  )),
-                              child: ListTile(
-                                  title: Text("Edit Profile"),
-                                  trailing: Icon(
-                                    Icons.arrow_forward_ios_rounded,
-                                  )),
-                            ))),
-                          ]),
-                          Flexible(
-                            child: Card(
-                                child: ListTile(
-                              title: Text("Change Schools"),
-                              trailing: Icon(Icons.arrow_forward_ios_rounded),
-                            )),
-                          ),
-                          Flexible(
-                              child: Card(
-                            child: ListTile(
-                                title: Text("Sign Out"),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios_rounded,
-                                )),
-                          )),
-                        ],
-                      );
-                  }
-                })));
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+            }
+          },
+        ),
+      ),
+    );
   }
 }
