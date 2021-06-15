@@ -79,13 +79,7 @@ class _HomePageState extends State<Home> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.blue),
-              borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: _widgetOptions.elementAt(_selectedIndex),
-          ),
+          child: _widgetOptions.elementAt(_selectedIndex),
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -336,6 +330,8 @@ class UserCardsState extends State<UserCards> {
                         CarouselSlider(
                           options: CarouselOptions(
                             enlargeCenterPage: true,
+                            viewportFraction: 1,
+                            aspectRatio: 9 / 15,
                           ),
                           items: widgetList,
                         ),
