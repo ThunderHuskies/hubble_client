@@ -81,6 +81,8 @@ class _HomePageState extends State<Home> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -111,15 +113,6 @@ class UserCard extends StatelessWidget {
     return MaterialApp(
       title: 'Home',
       home: Scaffold(
-        // appBar: AppBar(
-        //     title: Image.asset(
-        //       "assets/images/plane.png",
-        //       scale: 3.5,
-        //     ),
-        //     bottomOpacity: 0,
-        //     backgroundColor: Colors.white,
-        //     toolbarHeight: 75.0,
-        //     elevation: 0.0),
         body: user != null ? UserCards(user: user) : RegisterPage(),
       ),
     );
@@ -143,7 +136,6 @@ class UserCardsState extends State<UserCards> {
       body: FutureBuilder<List<MatchRating>>(
         future: findMatches(widget.user!.uid),
         builder: (context, snapshot) {
-          final double navigationBarHeight = MediaQuery.of(context).padding.bottom;
           final double height = MediaQuery.of(context).size.height;
           if (snapshot.hasError) {
             return Text("${snapshot.error}");
@@ -333,7 +325,8 @@ class UserCardsState extends State<UserCards> {
                             options: CarouselOptions(
                               enlargeCenterPage: true,
                               viewportFraction: 1,
-                              height: height - kBottomNavigationBarHeight - MediaQuery.of(context).padding.top,
+                              height:
+                                  height - kBottomNavigationBarHeight - MediaQuery.of(context).padding.top - MediaQuery.of(context).padding.bottom,
                             ),
                             items: widgetList,
                           ),
