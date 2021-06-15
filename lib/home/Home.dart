@@ -77,10 +77,8 @@ class _HomePageState extends State<Home> {
       AccountPage(user: widget.user),
     ];
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: _widgetOptions.elementAt(_selectedIndex),
-        ),
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -111,19 +109,20 @@ class UserCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Home',
-        home: Scaffold(
-          // appBar: AppBar(
-          //     title: Image.asset(
-          //       "assets/images/plane.png",
-          //       scale: 3.5,
-          //     ),
-          //     bottomOpacity: 0,
-          //     backgroundColor: Colors.white,
-          //     toolbarHeight: 75.0,
-          //     elevation: 0.0),
-          body: user != null ? UserCards(user: user) : RegisterPage(),
-        ));
+      title: 'Home',
+      home: Scaffold(
+        // appBar: AppBar(
+        //     title: Image.asset(
+        //       "assets/images/plane.png",
+        //       scale: 3.5,
+        //     ),
+        //     bottomOpacity: 0,
+        //     backgroundColor: Colors.white,
+        //     toolbarHeight: 75.0,
+        //     elevation: 0.0),
+        body: user != null ? UserCards(user: user) : RegisterPage(),
+      ),
+    );
   }
 }
 
@@ -144,6 +143,8 @@ class UserCardsState extends State<UserCards> {
       body: FutureBuilder<List<MatchRating>>(
         future: findMatches(widget.user!.uid),
         builder: (context, snapshot) {
+          final double navigationBarHeight = MediaQuery.of(context).padding.bottom;
+          final double height = MediaQuery.of(context).size.height;
           if (snapshot.hasError) {
             return Text("${snapshot.error}");
           } else if (snapshot.hasData) {
@@ -327,14 +328,16 @@ class UserCardsState extends State<UserCards> {
                     }).toList(); //converts to array
                     return Column(
                       children: [
-                        CarouselSlider(
-                          options: CarouselOptions(
-                            enlargeCenterPage: true,
-                            viewportFraction: 1,
-                            aspectRatio: 9 / 15,
+                        SafeArea(
+                          child: CarouselSlider(
+                            options: CarouselOptions(
+                              enlargeCenterPage: true,
+                              viewportFraction: 1,
+                              height: height - kBottomNavigationBarHeight - MediaQuery.of(context).padding.top,
+                            ),
+                            items: widgetList,
                           ),
-                          items: widgetList,
-                        ),
+                        )
                       ],
                     );
                 }
